@@ -23,7 +23,6 @@ export default function Home() {
     }
     loadData();
     
-    // Load cart from localStorage
     const savedCart = localStorage.getItem('kiongozi-cart');
     if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
@@ -43,45 +42,57 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.product.min_price || 0) * item.quantity, 0);
 
-  // Yaru Dark Theme - Ubuntu-inspired
-  const yaruColors = {
-    primary: '#E95420', // Ubuntu Orange
-    primaryHover: '#F6733A',
-    secondary: '#2C2C2C', // Dark gray
-    background: '#1A1A1A', // Very dark
-    surface: '#252525', // Card background
-    surfaceLight: '#333333',
-    text: '#FFFFFF',
-    textSecondary: '#AAAAAA',
-    border: '#444444',
+  // Kioo Ngozi Theme - From user's design
+  const theme = {
+    black: '#0a0a0a',
+    surface: '#1a1a1a',
+    accent: '#e95420', // Yaru Orange
+    gold: '#cfae81',
+    text: '#f5f5f5',
+    muted: '#a0a0a0',
+    border: 'rgba(255,255,255,0.1)',
+    glass: 'rgba(26, 26, 26, 0.8)',
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: yaruColors.background, color: yaruColors.primary }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: theme.black, color: theme.accent }}>
         <div className="text-2xl font-semibold">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: yaruColors.background, color: yaruColors.text }}>
+    <div className="min-h-screen" style={{ backgroundColor: theme.black, color: theme.text, fontFamily: 'Inter, sans-serif' }}>
+      {/* Announcement Bar */}
+      <div style={{ backgroundColor: theme.accent, color: 'white', textAlign: 'center', padding: '8px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase' }}>
+        Free Shipping Across Kenya | Artisan Excellence Since 2020
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-50 shadow-lg" style={{ backgroundColor: yaruColors.secondary, borderBottom: `3px solid ${yaruColors.primary}` }}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold" style={{ color: yaruColors.primary }}>
-            Kioo Ngozi Leather
-          </h1>
+      <header style={{ background: theme.glass, backdropFilter: 'blur(15px)', padding: '20px 40px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: `1px solid ${theme.border}`, position: 'sticky', top: 0, zIndex: 1000 }}>
+        {/* Logo would go here */}
+        <div style={{ position: 'absolute', left: '20px', width: '60px', height: '60px', borderRadius: '50%', border: `2px solid ${theme.accent}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <span style={{ color: theme.accent, fontWeight: 'bold', fontSize: '1.5rem' }}>K</span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+          <nav style={{ display: 'flex', gap: '40px', marginRight: '40px' }}>
+            <a href="#" style={{ color: theme.text, textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', letterSpacing: '1px' }}>HOME</a>
+            <a href="#products" style={{ color: theme.text, textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', letterSpacing: '1px' }}>SHOP</a>
+            <a href="#" style={{ color: theme.text, textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', letterSpacing: '1px' }}>ABOUT</a>
+            <a href="#" style={{ color: theme.text, textDecoration: 'none', fontWeight: 600, fontSize: '0.85rem', letterSpacing: '1px' }}>CONTACT</a>
+          </nav>
+
           <button 
             onClick={() => setShowCart(!showCart)}
-            className="relative p-2 rounded-full transition hover:bg-white/10"
-            style={{ color: yaruColors.primary }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', padding: '10px' }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke={theme.accent} strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
             {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              <span style={{ position: 'absolute', top: 0, right: 0, backgroundColor: theme.gold, color: theme.black, fontSize: '0.65rem', fontWeight: 'bold', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {cart.length}
               </span>
             )}
@@ -90,19 +101,31 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-96 flex items-center justify-center" style={{ backgroundColor: yaruColors.secondary }}>
-        <div className="absolute inset-0 bg-black/50" style={{ backgroundImage: 'linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%)' }}></div>
-        <div className="relative z-10 text-center px-4">
-          <h2 className="text-5xl font-bold mb-4" style={{ color: yaruColors.primary }}>
-            Artisan Leather
-          </h2>
-          <p className="text-xl mb-8" style={{ color: yaruColors.textSecondary }}>
-            Handcrafted leather goods, Kenyan excellence
+      <section style={{ height: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', background: `linear-gradient(135deg, ${theme.black} 0%, ${theme.surface} 100%)` }}>
+        <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at 30% 50%, ${theme.accent}15 0%, transparent 50%)` }}></div>
+        
+        <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 20px' }}>
+          <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 700, marginBottom: '20px', color: theme.text, lineHeight: 1.1 }}>
+            Artisan <span style={{ color: theme.accent }}>Leather</span>
+          </h1>
+          <p style={{ fontSize: '1.25rem', color: theme.muted, marginBottom: '40px', maxWidth: '600px', margin: '0 auto 40px' }}>
+            Handcrafted leather goods of unmatched quality. Each piece tells a story of Kenyan craftsmanship.
           </p>
           <button 
             onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-8 py-3 font-semibold rounded-full transition transform hover:scale-105 hover:bg-orange-600"
-            style={{ backgroundColor: yaruColors.primary }}
+            style={{ 
+              backgroundColor: theme.accent, 
+              color: 'white', 
+              border: 'none', 
+              padding: '16px 48px', 
+              fontSize: '1rem', 
+              fontWeight: 600, 
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              borderRadius: '0',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
           >
             Explore Collection
           </button>
@@ -110,14 +133,20 @@ export default function Home() {
       </section>
 
       {/* Category Filter */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-wrap gap-3 justify-center">
+      <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
           <button
             onClick={() => setSelectedCategory('')}
-            className={`px-4 py-2 rounded-full font-medium transition ${
-              selectedCategory === '' ? 'text-white' : ''
-            }`}
-            style={selectedCategory === '' ? { backgroundColor: yaruColors.primary } : { backgroundColor: yaruColors.surface, color: yaruColors.textSecondary }}
+            style={{
+              padding: '10px 24px',
+              borderRadius: '30px',
+              border: `1px solid ${theme.border}`,
+              background: selectedCategory === '' ? theme.accent : 'transparent',
+              color: selectedCategory === '' ? 'white' : theme.muted,
+              cursor: 'pointer',
+              fontWeight: 500,
+              transition: 'all 0.3s ease'
+            }}
           >
             All
           </button>
@@ -125,10 +154,16 @@ export default function Home() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.name)}
-              className={`px-4 py-2 rounded-full font-medium transition ${
-                selectedCategory === cat.name ? 'text-white' : ''
-              }`}
-              style={selectedCategory === cat.name ? { backgroundColor: yaruColors.primary } : { backgroundColor: yaruColors.surface, color: yaruColors.textSecondary }}
+              style={{
+                padding: '10px 24px',
+                borderRadius: '30px',
+                border: `1px solid ${theme.border}`,
+                background: selectedCategory === cat.name ? theme.accent : 'transparent',
+                color: selectedCategory === cat.name ? 'white' : theme.muted,
+                cursor: 'pointer',
+                fontWeight: 500,
+                transition: 'all 0.3s ease'
+              }}
             >
               {cat.name}
             </button>
@@ -137,57 +172,78 @@ export default function Home() {
       </section>
 
       {/* Products Grid */}
-      <section id="products" className="max-w-7xl mx-auto px-4 py-8">
-        <h3 className="text-3xl font-bold mb-8 text-center" style={{ color: yaruColors.primary }}>
+      <section id="products" style={{ maxWidth: '1400px', margin: '0 auto', padding: '40px 20px 80px' }}>
+        <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2.5rem', textAlign: 'center', marginBottom: '60px', color: theme.gold }}>
           Our Collection
-        </h3>
+        </h2>
         
         {filteredProducts.length === 0 ? (
-          <p className="text-center" style={{ color: yaruColors.textSecondary }}>No products found.</p>
+          <p style={{ textAlign: 'center', color: theme.muted }}>No products found.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '30px' }}>
             {filteredProducts.map(product => (
               <div 
                 key={product.id}
-                className="rounded-2xl overflow-hidden shadow-lg transition-transform hover:scale-[1.02] hover:shadow-2xl"
-                style={{ backgroundColor: yaruColors.surface, border: `1px solid ${yaruColors.border}` }}
+                style={{ 
+                  backgroundColor: theme.surface, 
+                  borderRadius: '8px', 
+                  overflow: 'hidden',
+                  border: `1px solid ${theme.border}`,
+                  transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = `0 20px 40px rgba(233, 84, 32, 0.15)`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
-                <div className="relative h-64" style={{ backgroundColor: yaruColors.surfaceLight }}>
+                <div style={{ position: 'relative', height: '300px', backgroundColor: '#252525' }}>
                   {product.image_url ? (
                     <img 
                       src={product.image_url} 
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center" style={{ color: yaruColors.textSecondary }}>
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.muted }}>
                       No Image
                     </div>
                   )}
                   {!product.in_stock && (
-                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                      <span className="text-white font-semibold">Out of Stock</span>
+                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ color: 'white', fontWeight: 600 }}>Out of Stock</span>
                     </div>
                   )}
                 </div>
-                <div className="p-5">
-                  <p className="text-xs font-medium mb-1" style={{ color: yaruColors.textSecondary }}>{product.category}</p>
-                  <h4 className="font-semibold text-lg mb-2 line-clamp-2">
+                <div style={{ padding: '24px' }}>
+                  <p style={{ fontSize: '0.75rem', color: theme.muted, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>{product.category}</p>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '16px', lineHeight: 1.4, color: theme.text }}>
                     {product.name}
-                  </h4>
-                  <div className="flex items-center justify-between">
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                      <span className="text-lg font-bold" style={{ color: yaruColors.primary }}>
+                      <span style={{ fontSize: '1.25rem', fontWeight: 700, color: theme.accent }}>
                         KSh {product.min_price?.toLocaleString()}
                       </span>
                     </div>
                     <button
                       onClick={() => addToCart(product)}
                       disabled={!product.in_stock}
-                      className="px-4 py-2 rounded-full text-sm font-medium text-white transition hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{ backgroundColor: product.in_stock ? yaruColors.primary : '#666' }}
+                      style={{
+                        backgroundColor: product.in_stock ? 'transparent' : '#444',
+                        color: product.in_stock ? theme.accent : '#888',
+                        border: `1px solid ${product.in_stock ? theme.accent : '#444'}`,
+                        padding: '10px 24px',
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        cursor: product.in_stock ? 'pointer' : 'not-allowed',
+                        transition: 'all 0.3s ease'
+                      }}
                     >
-                      Add
+                      Add to Cart
                     </button>
                   </div>
                 </div>
@@ -198,74 +254,69 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12" style={{ backgroundColor: yaruColors.secondary, borderTop: `3px solid ${yaruColors.primary}` }}>
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h4 className="text-xl font-bold mb-4" style={{ color: yaruColors.primary }}>Kioo Ngozi Leather</h4>
-          <p className="opacity-80" style={{ color: yaruColors.textSecondary }}>Handcrafted leather excellence from Kenya</p>
-          <p className="mt-4 text-sm opacity-60">&copy; 2026 Kioo Ngozi Leather. All rights reserved.</p>
+      <footer style={{ backgroundColor: theme.surface, padding: '60px 20px', borderTop: `3px solid ${theme.accent}` }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+          <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '2rem', color: theme.accent, marginBottom: '16px' }}>Kioo Ngozi Leather</h3>
+          <p style={{ color: theme.muted, marginBottom: '8px' }}>Handcrafted leather excellence from Kenya</p>
+          <p style={{ color: theme.muted, fontSize: '0.85rem', opacity: 0.6 }}>&copy; 2026 Kioo Ngozi Leather. All rights reserved.</p>
         </div>
       </footer>
 
       {/* Cart Sidebar */}
       {showCart && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/70" onClick={() => setShowCart(false)}></div>
-          <div className="relative w-full max-w-md shadow-2xl h-full overflow-y-auto" style={{ backgroundColor: yaruColors.surface }}>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold" style={{ color: yaruColors.primary }}>Your Cart</h3>
-                <button onClick={() => setShowCart(false)} className="hover:text-white" style={{ color: yaruColors.textSecondary }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              {cart.length === 0 ? (
-                <p className="text-center py-8" style={{ color: yaruColors.textSecondary }}>Your cart is empty</p>
-              ) : (
-                <>
-                  <div className="space-y-4 mb-6">
-                    {cart.map((item, idx) => (
-                      <div key={idx} className="flex gap-4 p-3 rounded-lg" style={{ backgroundColor: yaruColors.background }}>
-                        <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0" style={{ backgroundColor: yaruColors.surfaceLight }}>
-                          {item.product.image_url && (
-                            <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-sm line-clamp-2">{item.product.name}</p>
-                          <p className="font-bold" style={{ color: yaruColors.primary }}>
-                            KSh {item.product.min_price?.toLocaleString()}
-                          </p>
-                        </div>
-                        <button 
-                          onClick={() => setCart(cart.filter((_, i) => i !== idx))}
-                          className="text-red-500 hover:text-red-400"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="border-t pt-4" style={{ borderColor: yaruColors.border }}>
-                    <div className="flex justify-between text-lg font-bold mb-4">
-                      <span>Total</span>
-                      <span style={{ color: yaruColors.primary }}>KSh {cartTotal.toLocaleString()}</span>
-                    </div>
-                    <button 
-                      className="w-full py-3 rounded-full font-semibold transition hover:bg-orange-600"
-                      style={{ backgroundColor: yaruColors.primary, color: 'white' }}
-                    >
-                      Checkout (Coming Soon)
-                    </button>
-                  </div>
-                </>
-              )}
+        <div style={{ position: 'fixed', inset: 0, zIndex: 2000, display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)' }} onClick={() => setShowCart(false)}></div>
+          <div style={{ position: 'relative', width: '100%', maxWidth: '450px', backgroundColor: theme.surface, height: '100%', overflowY: 'auto', padding: '30px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
+              <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.75rem', color: theme.gold }}>Your Cart</h3>
+              <button onClick={() => setShowCart(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: theme.muted }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
+            
+            {cart.length === 0 ? (
+              <p style={{ textAlign: 'center', color: theme.muted, padding: '40px 0' }}>Your cart is empty</p>
+            ) : (
+              <>
+                <div style={{ marginBottom: '30px' }}>
+                  {cart.map((item, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: '16px', padding: '16px', backgroundColor: theme.black, borderRadius: '8px', marginBottom: '12px' }}>
+                      <div style={{ width: '70px', height: '70px', borderRadius: '6px', overflow: 'hidden', backgroundColor: '#333', flexShrink: 0 }}>
+                        {item.product.image_url && (
+                          <img src={item.product.image_url} alt={item.product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        )}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontSize: '0.9rem', fontWeight: 500, marginBottom: '4px' }}>{item.product.name}</p>
+                        <p style={{ color: theme.accent, fontWeight: 700 }}>KSh {item.product.min_price?.toLocaleString()}</p>
+                      </div>
+                      <button 
+                        onClick={() => setCart(cart.filter((_, i) => i !== idx))}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff4444', alignSelf: 'flex-start' }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                
+                <div style={{ borderTop: `1px solid ${theme.border}`, paddingTop: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 700, marginBottom: '20px' }}>
+                    <span>Total</span>
+                    <span style={{ color: theme.accent }}>KSh {cartTotal.toLocaleString()}</span>
+                  </div>
+                  <button 
+                    style={{ width: '100%', padding: '16px', backgroundColor: theme.accent, color: 'white', border: 'none', fontSize: '1rem', fontWeight: 600, letterSpacing: '1px', cursor: 'pointer' }}
+                  >
+                    Checkout (Coming Soon)
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
