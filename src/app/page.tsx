@@ -155,10 +155,13 @@ export default function Home() {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        {/* Logo - centered and zoomed to cover circle */}
+        {/* Logo - exact size from original design */}
         <div style={{
-          width: scrolled ? '50px' : '70px',
-          height: scrolled ? '50px' : '70px',
+          position: 'absolute',
+          top: '5px',
+          left: '20px',
+          width: '100px',
+          height: '100px',
           borderRadius: '50%',
           overflow: 'hidden',
           border: `2px solid ${theme.primary}`,
@@ -167,12 +170,13 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: theme.primary
+          zIndex: 1100,
+          cursor: 'pointer',
         }}>
           <img 
             src="/kiongozi_logo.png" 
             alt="Kioo Ngozi"
-            style={{ width: '200%', height: 'auto', minHeight: '100%', objectFit: 'cover', transform: 'translateX(-25%)' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(2.0) translateX(-1%)' }}
           />
         </div>
 
@@ -255,7 +259,7 @@ export default function Home() {
         </button>
       </header>
 
-      {/* Hero */}
+      {/* Hero with background image */}
       <section style={{
         minHeight: '100vh',
         display: 'flex',
@@ -263,9 +267,20 @@ export default function Home() {
         justifyContent: 'center',
         position: 'relative',
         zIndex: 1,
-        padding: '120px 40px 80px'
+        padding: '120px 40px 80px',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1549637642-90187f64f420?q=80&w=2074)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}>
-        <div style={{ textAlign: 'center', maxWidth: '900px' }}>
+        {/* Dark overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%)',
+          zIndex: 0
+        }}></div>
+        
+        <div style={{ textAlign: 'center', maxWidth: '900px', position: 'relative', zIndex: 1 }}>
           <h1 style={{
             fontSize: 'clamp(3rem, 10vw, 7rem)',
             fontWeight: 800,
