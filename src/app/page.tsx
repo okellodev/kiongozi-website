@@ -268,7 +268,7 @@ export default function Home() {
         position: 'relative',
         zIndex: 1,
         padding: '120px 40px 80px',
-        backgroundImage: 'url(https://images.unsplash.com/photo-1549637642-90187f64f420?q=80&w=2074)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1920)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}>
