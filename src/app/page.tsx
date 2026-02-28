@@ -155,7 +155,7 @@ export default function Home() {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        {/* Logo */}
+        {/* Logo - zoomed in to fill circle */}
         <div style={{
           width: scrolled ? '50px' : '70px',
           height: scrolled ? '50px' : '70px',
@@ -167,12 +167,12 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: theme.surface
+          backgroundColor: theme.primary
         }}>
           <img 
             src="/kiongozi_logo.png" 
             alt="Kioo Ngozi"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: '150%', height: '150%', objectFit: 'cover', marginLeft: '-25%', marginTop: '-15%' }}
           />
         </div>
 
@@ -312,29 +312,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Categories - only show categories with products */}
       <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-          {[{id: 0, name: 'All'}, ...categories].map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id === 0 ? '' : cat.name)}
-              style={{
-                padding: '12px 28px',
-                borderRadius: '30px',
-                border: `1px solid ${selectedCategory === (cat.id === 0 ? '' : cat.name) ? theme.primary : theme.border}`,
-                background: selectedCategory === (cat.id === 0 ? '' : cat.name) ? theme.primary : 'transparent',
-                color: selectedCategory === (cat.id === 0 ? '' : cat.name) ? 'white' : theme.textMuted,
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
+        {/* Get categories that have products */}
+        {(() => {
+          const catsWithProducts = categories.filter(cat => 
+            products.some(p => p.category && p.category.toLowerCase().includes(cat.name.toLowerCase()))
+          );
+          
+          return (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={() => setSelectedCategory('')}
+                style={{
+                  padding: '12px 28px',
+                  borderRadius: '30px',
+                  border: `1px solid ${selectedCategory === '' ? theme.primary : theme.border}`,
+                  background: selectedCategory === '' ? theme.primary : 'transparent',
+                  color: selectedCategory === '' ? 'white' : theme.textMuted,
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                All
+              </button>
+              {catsWithProducts.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.name)}
+                  style={{
+                    padding: '12px 28px',
+                    borderRadius: '30px',
+                    border: `1px solid ${selectedCategory === cat.name ? theme.primary : theme.border}`,
+                    background: selectedCategory === cat.name ? theme.primary : 'transparent',
+                    color: selectedCategory === cat.name ? 'white' : theme.textMuted,
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+          );
+        })()}
       </section>
 
       {/* Products */}
@@ -351,8 +376,8 @@ export default function Home() {
         
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-          gap: '30px' 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
+          gap: '25px' 
         }}>
           {filteredProducts.map((product, idx) => (
             <div 
