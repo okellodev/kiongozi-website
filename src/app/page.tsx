@@ -155,7 +155,7 @@ export default function Home() {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        {/* Logo - zoomed in to fill circle, moved right and down */}
+        {/* Logo - centered and zoomed to cover circle */}
         <div style={{
           width: scrolled ? '50px' : '70px',
           height: scrolled ? '50px' : '70px',
@@ -172,7 +172,7 @@ export default function Home() {
           <img 
             src="/kiongozi_logo.png" 
             alt="Kioo Ngozi"
-            style={{ width: '180%', height: '180%', objectFit: 'cover', marginLeft: '-40%', marginTop: '-25%' }}
+            style={{ width: '200%', height: 'auto', minHeight: '100%', objectFit: 'cover', transform: 'translateX(-25%)' }}
           />
         </div>
 
