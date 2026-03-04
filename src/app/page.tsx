@@ -623,17 +623,21 @@ export default function Home() {
           <h2 className="section-title">AS SEEN ON</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '100px' }}>
             {[
-              { name: 'Citizen TV', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
-              { name: 'Ramogi TV', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
-              { name: 'Dr. King\'ori', link: 'https://www.youtube.com/watch?v=b5uMIBqAwD8', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
-              { name: 'KTN News', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
+              { name: 'Citizen TV', logo: '/media/citizen.png', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
+              { name: 'Ramogi TV', logo: '/media/ramogi.png', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
+              { name: 'Dr. King\'ori', logo: '/media/kingori.png', link: 'https://www.youtube.com/watch?v=b5uMIBqAwD8', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
+              { name: 'KTN News', logo: '/media/ktn.png', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
             ].map((media, i) => (
               <a key={i} href={media.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
-                <div style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease' }}
+                <div style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
+                  <div style={{ height: '60px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {/* Placeholder logic: user said they added icons, if not found, text will show */}
+                    <img src={media.logo} alt={media.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: 'grayscale(100%) brightness(2)' }} />
+                  </div>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
                   <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.6 }}>{media.desc}</p>
                 </div>
               </a>
