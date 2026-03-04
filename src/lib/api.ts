@@ -51,3 +51,14 @@ export async function getCategories(): Promise<{id: number; name: string}[]> {
   const data = await res.json();
   return data.categories || [];
 }
+
+export async function newsletterSignup(email: string, firstName: string = '') {
+  const res = await fetch(`${API_BASE}/api/newsletter-signup/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, first_name: firstName }),
+  });
+  return res.json();
+}

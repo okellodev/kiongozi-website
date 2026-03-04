@@ -11,6 +11,9 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('featured');
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState('');
+  const [signupStatus, setSignupStatus] = useState<{message: string, type: 'success' | 'error' | null}>({message: '', type: null});
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const [cart, setCart] = useState<{product: Product; variant: any; quantity: number}[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -59,10 +62,14 @@ export default function Home() {
     .filter(p => {
       const matchesCategory = !selectedCategory || (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase()));
       const matchesShoeBrand = !selectedShoeBrand || (p.shoe_brand && p.shoe_brand.toLowerCase() === selectedShoeBrand.toLowerCase());
+      
+      const search = searchQuery.toLowerCase();
       const matchesSearch = !searchQuery || 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (p.shoe_brand && p.shoe_brand.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+        (p.name && p.name.toLowerCase().includes(search)) || 
+        (p.shoe_brand && p.shoe_brand.toLowerCase().includes(search)) ||
+        (p.description && p.description.toLowerCase().includes(search)) ||
+        (p.category && p.category.toLowerCase().includes(search));
+        
       return matchesCategory && matchesSearch && matchesShoeBrand;
     })
     .sort((a, b) => {
@@ -107,6 +114,28 @@ export default function Home() {
 
   const removeFromCart = (variantId: number) => {
     setCart(cart.filter(item => item.variant.id !== variantId));
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setIsSigningUp(true);
+    try {
+      const { newsletterSignup } = await import('@/lib/api');
+      const res = await newsletterSignup(email);
+      setSignupStatus({
+        message: res.coupon_code 
+          ? `Success! Your 15% discount code is: ${res.coupon_code}` 
+          : res.message || 'Thank you for subscribing!',
+        type: 'success'
+      });
+      setEmail('');
+    } catch (err) {
+      setSignupStatus({ message: 'Failed to subscribe. Please try again.', type: 'error' });
+    } finally {
+      setIsSigningUp(false);
+    }
   };
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.variant.price || 0) * item.quantity, 0);
@@ -269,27 +298,37 @@ export default function Home() {
             </a>
           ))}
           
+          {/* Search Bar */}
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <input 
               type="text"
-              placeholder="Search..."
+              placeholder="Search rare pieces..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: `1px solid ${theme.border}`,
+                background: 'rgba(255,255,255,0.08)',
+                border: searchQuery ? `1px solid ${theme.primary}` : `1px solid ${theme.border}`,
                 borderRadius: '20px',
-                padding: '8px 15px 8px 35px',
+                padding: '10px 15px 10px 40px',
                 color: 'white',
-                fontSize: '0.85rem',
-                width: '150px',
+                fontSize: '0.9rem',
+                width: searchQuery ? '250px' : '180px',
                 outline: 'none',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: searchQuery ? `0 0 15px ${theme.primaryGlow}` : 'none'
               }}
             />
-            <svg style={{ position: 'absolute', left: '12px' }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke={theme.textMuted} strokeWidth="2">
+            <svg style={{ position: 'absolute', left: '15px' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke={searchQuery ? theme.primary : theme.textMuted} strokeWidth="2.5">
               <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
             </svg>
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                style={{ position: 'absolute', right: '12px', background: 'none', border: 'none', color: theme.textMuted, cursor: 'pointer', padding: '5px' }}
+              >
+                ✕
+              </button>
+            )}
           </div>
         </nav>
 
@@ -499,38 +538,54 @@ export default function Home() {
       </section>
 
       {/* Products Grid */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: '60px 20px 100px', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px' }}>
-          {filteredProducts.map((product) => (
-            <div 
-              key={product.id} className="product-card"
-              style={{ background: theme.surface, borderRadius: '24px', overflow: 'hidden', border: `1px solid ${theme.border}`, transition: 'all 0.4s ease', cursor: 'pointer' }}
-              onClick={() => openProductDetail(product.id)}
+      <section id="products" style={{ maxWidth: '1400px', margin: '0 auto', padding: '80px 20px 120px', position: 'relative', zIndex: 1 }}>
+        {filteredProducts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '100px 0', background: theme.surface, borderRadius: '40px', border: `1px solid ${theme.border}` }}>
+            <svg style={{ marginBottom: '20px', opacity: 0.3 }} width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+              <path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+            </svg>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: theme.gold, marginBottom: '10px' }}>No matching pieces found</h3>
+            <p style={{ color: theme.textMuted }}>Try adjusting your search or filters to explore our rare collection.</p>
+            <button 
+              onClick={() => { setSearchQuery(''); setSelectedCategory(''); setSelectedShoeBrand(''); }}
+              style={{ marginTop: '30px', background: 'transparent', border: `1px solid ${theme.primary}`, color: theme.primary, padding: '10px 25px', borderRadius: '25px', cursor: 'pointer' }}
             >
-              <div style={{ position: 'relative', height: '320px', background: theme.surfaceLight }}>
-                {product.image_url ? (
-                  <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.textMuted }}>No Image</div>
-                )}
-                <div style={{ position: 'absolute', top: '15px', left: '15px' }}>
-                  <span style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', color: theme.gold, fontSize: '0.7rem', fontWeight: 800, padding: '5px 12px', borderRadius: '20px', border: `1px solid ${theme.gold}` }}>
-                    {product.shoe_brand || 'ARTISAN'}
-                  </span>
+              Clear All Filters
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px' }}>
+            {filteredProducts.map((product) => (
+              <div 
+                key={product.id} className="product-card"
+                style={{ background: theme.surface, borderRadius: '24px', overflow: 'hidden', border: `1px solid ${theme.border}`, transition: 'all 0.4s ease', cursor: 'pointer' }}
+                onClick={() => openProductDetail(product.id)}
+              >
+                <div style={{ position: 'relative', height: '320px', background: theme.surfaceLight }}>
+                  {product.image_url ? (
+                    <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.textMuted }}>No Image</div>
+                  )}
+                  <div style={{ position: 'absolute', top: '15px', left: '15px' }}>
+                    <span style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', color: theme.gold, fontSize: '0.7rem', fontWeight: 800, padding: '5px 12px', borderRadius: '20px', border: `1px solid ${theme.gold}` }}>
+                      {product.shoe_brand || 'ARTISAN'}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div style={{ padding: '24px' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>{product.name}</h3>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.primary }}>KSh {product.min_price?.toLocaleString()}</span>
-                  <div style={{ width: '35px', height: '35px', borderRadius: '50%', border: `1px solid ${theme.primary}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.primary }}>
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M12 4v16m8-8H4" /></svg>
+                <div style={{ padding: '24px' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>{product.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.primary }}>KSh {product.min_price?.toLocaleString()}</span>
+                    <div style={{ width: '35px', height: '35px', borderRadius: '50%', border: `1px solid ${theme.primary}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.primary }}>
+                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M12 4v16m8-8H4" /></svg>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Who Kioo Ngozi is For */}
@@ -660,7 +715,28 @@ export default function Home() {
             <div>
               <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SUBSCRIBE</h4>
               <p style={{ color: theme.textMuted, fontSize: '0.8rem', marginBottom: '15px' }}>Join our community for 15% off your first rare piece.</p>
-              <input type="email" placeholder="Your email" style={{ background: theme.dark, border: `1px solid ${theme.border}`, padding: '10px', borderRadius: '5px', width: '100%', color: 'white' }} />
+              <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email" 
+                  required
+                  style={{ background: theme.dark, border: `1px solid ${theme.border}`, padding: '12px', borderRadius: '10px', width: '100%', color: 'white', outline: 'none' }} 
+                />
+                <button 
+                  type="submit" 
+                  disabled={isSigningUp}
+                  style={{ background: theme.primary, color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', opacity: isSigningUp ? 0.7 : 1 }}
+                >
+                  {isSigningUp ? 'SUBSCRIBING...' : 'GET MY 15% OFF'}
+                </button>
+              </form>
+              {signupStatus.message && (
+                <p style={{ marginTop: '15px', fontSize: '0.8rem', color: signupStatus.type === 'success' ? '#25D366' : '#ff4444', fontWeight: 600 }}>
+                  {signupStatus.message}
+                </p>
+              )}
             </div>
           </div>
           <div style={{ marginTop: '60px', paddingTop: '30px', borderTop: `1px solid ${theme.border}`, textAlign: 'center', gridColumn: 'span 2' }}>
