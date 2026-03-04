@@ -204,6 +204,10 @@ export default function Home() {
       }}>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <span>Proudly made in Kenya — by Kenyans, for the world.</span>
+          <span style={{ opacity: 0.5 }}>|</span>
+          <a href="https://api.whatsapp.com/send/?phone=254111955273&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" style={{ color: theme.primary, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span style={{ fontSize: '1rem' }}>💬</span> Need help? Chat with us
+          </a>
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <a href="https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
@@ -350,7 +354,7 @@ export default function Home() {
             { icon: "🚚", title: "Swift Delivery", desc: "Within 24–48 hrs across Kenya" },
             { icon: "🔄", title: "Easy Exchanges", desc: "Real leather guarantee" },
             { icon: "🏬", title: "Free Pickup", desc: "Mithoo Business Center, Nairobi" },
-            { icon: "💬", title: "Fast Support", desc: "Chat on WhatsApp 0742507786" }
+            { icon: "💬", title: "Fast Support", desc: "WhatsApp: +254 111 955 273" }
           ].map((item, i) => (
             <div key={i} style={{ padding: '20px' }}>
               <div style={{ fontSize: '2rem', marginBottom: '15px' }}>{item.icon}</div>
@@ -556,15 +560,20 @@ export default function Home() {
           <h2 className="section-title">AS SEEN ON</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '100px' }}>
             {[
-              { name: 'Citizen TV', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
-              { name: 'Ramogi TV', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
-              { name: 'Dr. King\'ori', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
-              { name: 'KTN News', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
+              { name: 'Citizen TV', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
+              { name: 'Ramogi TV', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
+              { name: 'Dr. King\'ori', link: 'https://www.youtube.com/watch?v=b5uMIBqAwD8', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
+              { name: 'KTN News', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
             ].map((media, i) => (
-              <div key={i} style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center' }}>
-                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
-                <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.6 }}>{media.desc}</p>
-              </div>
+              <a key={i} href={media.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
+                <div style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.transform = 'translateY(-5px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
+                  <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.6 }}>{media.desc}</p>
+                </div>
+              </a>
             ))}
           </div>
 
@@ -597,11 +606,13 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '40px' }}>
             <div>
               <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SUPPORT</h4>
-              <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.8 }}>
-                💬 WhatsApp: 0742507786<br/>
-                🚚 Delivery: 24-48 hrs<br/>
-                🔄 Easy Exchanges
-              </p>
+              <div style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <a href="https://api.whatsapp.com/send/?phone=254111955273&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>💬 WhatsApp: +254 111 955 273</a>
+                <a href="tel:+254111955273" style={{ color: 'inherit', textDecoration: 'none' }}>📞 Call: +254 111 955 273</a>
+                <a href="sms:+254111955273" style={{ color: 'inherit', textDecoration: 'none' }}>✉️ SMS: +254 111 955 273</a>
+                <span>🚚 Delivery: 24-48 hrs</span>
+                <span>🔄 Easy Exchanges</span>
+              </div>
             </div>
             <div>
               <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SHOP</h4>
@@ -616,7 +627,11 @@ export default function Home() {
             </div>
           </div>
           <div style={{ marginTop: '60px', paddingTop: '30px', borderTop: `1px solid ${theme.border}`, textAlign: 'center', gridColumn: 'span 2' }}>
-            <p style={{ color: theme.textMuted, fontSize: '0.8rem' }}>&copy; 2026 KIOO NGOZI LEATHER. ALL RIGHTS RESERVED. REAL LEATHER GUARANTEE.</p>
+            <p style={{ color: theme.textMuted, fontSize: '0.8rem', marginBottom: '15px' }}>&copy; 2026 KIOO NGOZI LEATHER. ALL RIGHTS RESERVED. REAL LEATHER GUARANTEE.</p>
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', fontSize: '0.75rem' }}>
+              <a href="/privacy" style={{ color: theme.textMuted, textDecoration: 'none' }}>Privacy Policy</a>
+              <a href="/terms" style={{ color: theme.textMuted, textDecoration: 'none' }}>Terms of Service</a>
+            </div>
           </div>
         </div>
       </footer>
