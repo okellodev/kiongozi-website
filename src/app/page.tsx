@@ -7,7 +7,9 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{id: number; name: string}[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedShoeBrand, setSelectedShoeBrand] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('featured');
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<{product: Product; variant: any; quantity: number}[]>([]);
   const [showCart, setShowCart] = useState(false);
@@ -53,14 +55,24 @@ export default function Home() {
     localStorage.setItem('kiongozi-cart', JSON.stringify(cart));
   }, [cart]);
 
-  const filteredProducts = products.filter(p => {
-    const matchesCategory = !selectedCategory || p.category.toLowerCase().includes(selectedCategory.toLowerCase());
-    const matchesSearch = !searchQuery || 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.shoe_brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filteredProducts = products
+    .filter(p => {
+      const matchesCategory = !selectedCategory || p.category.toLowerCase().includes(selectedCategory.toLowerCase());
+      const matchesShoeBrand = !selectedShoeBrand || p.shoe_brand.toLowerCase() === selectedShoeBrand.toLowerCase();
+      const matchesSearch = !searchQuery || 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        p.shoe_brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch && matchesShoeBrand;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-low') return (a.min_price || 0) - (b.min_price || 0);
+      if (sortBy === 'price-high') return (b.min_price || 0) - (a.min_price || 0);
+      if (sortBy === 'newest') return b.id - a.id;
+      return 0; // featured/default
+    });
+
+  const shoeBrands = Array.from(new Set(products.map(p => p.shoe_brand))).filter(Boolean);
 
   const openProductDetail = async (id: number) => {
     setIsModalLoading(true);
@@ -294,33 +306,69 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Filters */}
+      {/* Filters & Sorting */}
       <section style={{ maxWidth: '1200px', margin: '-40px auto 0', padding: '0 20px', position: 'relative', zIndex: 10 }}>
-        <div style={{ background: theme.surface, borderRadius: '40px', padding: '15px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', border: `1px solid ${theme.border}`, boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
-          <button
-            onClick={() => setSelectedCategory('')}
-            style={{
-              padding: '10px 25px', borderRadius: '25px', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.3s ease', cursor: 'pointer',
-              background: selectedCategory === '' ? theme.primary : 'transparent',
-              color: selectedCategory === '' ? 'white' : theme.textMuted,
-              border: `1px solid ${selectedCategory === '' ? theme.primary : 'transparent'}`
-            }}
-          >
-            All Items
-          </button>
-          {categories.filter(c => products.some(p => p.category === c.name)).map((cat) => (
+        <div style={{ background: theme.surface, borderRadius: '40px', padding: '20px', border: `1px solid ${theme.border}`, boxShadow: '0 20px 40px rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
+          {/* Category Tabs */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
             <button
-              key={cat.id} onClick={() => setSelectedCategory(cat.name)}
+              onClick={() => setSelectedCategory('')}
               style={{
                 padding: '10px 25px', borderRadius: '25px', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.3s ease', cursor: 'pointer',
-                background: selectedCategory === cat.name ? theme.primary : 'transparent',
-                color: selectedCategory === cat.name ? 'white' : theme.textMuted,
-                border: `1px solid ${selectedCategory === cat.name ? theme.primary : 'transparent'}`
+                background: selectedCategory === '' ? theme.primary : 'transparent',
+                color: selectedCategory === '' ? 'white' : theme.textMuted,
+                border: `1px solid ${selectedCategory === '' ? theme.primary : 'transparent'}`
               }}
             >
-              {cat.name}
+              All Collection
             </button>
-          ))}
+            {categories.filter(c => products.some(p => p.category === c.name)).map((cat) => (
+              <button
+                key={cat.id} onClick={() => setSelectedCategory(cat.name)}
+                style={{
+                  padding: '10px 25px', borderRadius: '25px', fontSize: '0.85rem', fontWeight: 600, transition: 'all 0.3s ease', cursor: 'pointer',
+                  background: selectedCategory === cat.name ? theme.primary : 'transparent',
+                  color: selectedCategory === cat.name ? 'white' : theme.textMuted,
+                  border: `1px solid ${selectedCategory === cat.name ? theme.primary : 'transparent'}`
+                }}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `1px solid ${theme.border}`, paddingTop: '15px', flexWrap: 'wrap', gap: '15px' }}>
+            {/* Shoe Brand Filter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '0.8rem', color: theme.textMuted, fontWeight: 600 }}>BRAND:</span>
+              <select 
+                value={selectedShoeBrand}
+                onChange={(e) => setSelectedShoeBrand(e.target.value)}
+                style={{ background: 'transparent', border: 'none', color: theme.gold, fontSize: '0.85rem', fontWeight: 700, outline: 'none', cursor: 'pointer' }}
+              >
+                <option value="" style={{ background: theme.surface }}>All Brands</option>
+                {shoeBrands.map(brand => (
+                  <option key={brand} value={brand} style={{ background: theme.surface }}>{brand}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort By */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '0.8rem', color: theme.textMuted, fontWeight: 600 }}>SORT:</span>
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{ background: 'transparent', border: 'none', color: theme.text, fontSize: '0.85rem', fontWeight: 700, outline: 'none', cursor: 'pointer' }}
+              >
+                <option value="featured" style={{ background: theme.surface }}>Featured</option>
+                <option value="price-low" style={{ background: theme.surface }}>Price: Low to High</option>
+                <option value="price-high" style={{ background: theme.surface }}>Price: High to Low</option>
+                <option value="newest" style={{ background: theme.surface }}>Newest Arrivals</option>
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
