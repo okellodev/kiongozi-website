@@ -621,7 +621,7 @@ export default function Home() {
       <section style={{ padding: '100px 20px', position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h2 className="section-title">AS SEEN ON</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '100px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px', marginBottom: '100px' }}>
             {[
               { name: 'Citizen TV', logo: '/media/citizen.avif', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
               { name: 'Ramogi TV', logo: '/media/ramogi.avif', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
@@ -633,7 +633,7 @@ export default function Home() {
                   onMouseEnter={e => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <div style={{ height: '80px', width: '80px', marginBottom: '20px', borderRadius: '20%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
+                  <div style={{ height: '80px', width: '80px', marginBottom: '20px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
                     <img src={media.logo} alt={media.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   </div>
                   <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
