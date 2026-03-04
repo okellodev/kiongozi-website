@@ -195,13 +195,42 @@ export default function Home() {
         }}></div>
       </div>
 
+      {/* Announcement & Social Top Bar */}
+      <div style={{
+        background: `linear-gradient(90deg, ${theme.dark}, ${theme.surfaceLight})`,
+        padding: '8px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        fontSize: '0.7rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase',
+        position: 'relative', zIndex: 1010, borderBottom: `1px solid ${theme.border}`
+      }}>
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+          <span>Proudly made in Kenya — by Kenyans, for the world.</span>
+        </div>
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <a href="https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/kioo_ngozi_leather/" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@KiooNgoziLeather" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@kioo_ngozi_leather" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.32h0q2.55,10.05,7.24,19.31h0a122.51,122.51,0,0,0,111.44,79.52Z"/></svg>
+          </a>
+          <a href="https://x.com/kioo_ngozi_" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
+            <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+
       {/* Announcement */}
       <div style={{
         background: `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`,
         padding: '10px', textAlign: 'center', fontSize: '0.75rem', fontWeight: 700,
         letterSpacing: '2px', textTransform: 'uppercase', position: 'relative', zIndex: 1010
       }}>
-        Proudly made in Kenya — by Kenyans, for the world. ✦ Free Shipping Across Kenya
+        Free Shipping Across Kenya ✦ Artisan Excellence Since 2020
       </div>
 
       {/* Header */}
@@ -314,6 +343,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Value Props */}
+      <section style={{ padding: '40px 20px', background: theme.dark, borderBottom: `1px solid ${theme.border}`, position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center' }}>
+          {[
+            { icon: "🚚", title: "Swift Delivery", desc: "Within 24–48 hrs across Kenya" },
+            { icon: "🔄", title: "Easy Exchanges", desc: "Real leather guarantee" },
+            { icon: "🏬", title: "Free Pickup", desc: "Mithoo Business Center, Nairobi" },
+            { icon: "💬", title: "Fast Support", desc: "Chat on WhatsApp 0742507786" }
+          ].map((item, i) => (
+            <div key={i} style={{ padding: '20px' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '15px' }}>{item.icon}</div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '10px', color: theme.gold }}>{item.title}</h3>
+              <p style={{ color: theme.textMuted, fontSize: '0.85rem' }}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Why We Are Different */}
       <section style={{ padding: '100px 20px', background: theme.surface, position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -353,10 +400,26 @@ export default function Home() {
             ].map((item, i) => (
               <div key={i} style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', padding: '30px', background: theme.surface, borderRadius: '24px', border: `1px solid ${theme.border}` }}>
                 <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: theme.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800, flexShrink: 0 }}>{item.step}</div>
-                <div>
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '10px' }}>{item.title}</h3>
-                  <p style={{ color: theme.textMuted, lineHeight: 1.6 }}>{item.desc}</p>
-                </div>
+            <div>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SOCIAL</h4>
+              <div style={{ display: 'flex', gap: '15px' }}>
+                <a href="https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/kioo_ngozi_leather/" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="https://www.youtube.com/@KiooNgoziLeather" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+                <a href="https://www.tiktok.com/@kioo_ngozi_leather" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.32h0q2.55,10.05,7.24,19.31h0a122.51,122.51,0,0,0,111.44,79.52Z"/></svg>
+                </a>
+                <a href="https://x.com/kioo_ngozi_" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+              </div>
+            </div>
               </div>
             ))}
           </div>
@@ -491,10 +554,16 @@ export default function Home() {
       <section style={{ padding: '100px 20px', position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h2 className="section-title">AS SEEN ON</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', marginBottom: '100px' }}>
-            {['Citizen TV', 'Ramogi TV', 'Dr. King\'ori', 'KTN News'].map((media, i) => (
-              <div key={i} style={{ padding: '40px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center' }}>
-                <span style={{ fontSize: '1.5rem', fontWeight: 800, opacity: 0.5 }}>{media}</span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '100px' }}>
+            {[
+              { name: 'Citizen TV', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
+              { name: 'Ramogi TV', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
+              { name: 'Dr. King\'ori', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
+              { name: 'KTN News', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
+            ].map((media, i) => (
+              <div key={i} style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center' }}>
+                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
+                <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.6 }}>{media.desc}</p>
               </div>
             ))}
           </div>
