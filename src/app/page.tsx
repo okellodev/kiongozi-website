@@ -623,18 +623,18 @@ export default function Home() {
           <h2 className="section-title">AS SEEN ON</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '100px' }}>
             {[
-              { name: 'Citizen TV', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Citizen_TV_Kenya.jpg', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
-              { name: 'Ramogi TV', logo: 'https://yt3.googleusercontent.com/ytc/AIdro_kXyYqq_ZJq_ZJq_ZJq_ZJq_ZJq_ZJq_ZJq=s900-c-k-c0x00ffffff-no-rj', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
-              { name: 'Dr. King\'ori', logo: 'https://yt3.googleusercontent.com/ytc/AIdro_n_ZJq_ZJq_ZJq_ZJq_ZJq_ZJq_ZJq_ZJq=s900-c-k-c0x00ffffff-no-rj', link: 'https://www.youtube.com/watch?v=b5uMIBqAwD8', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
-              { name: 'KTN News', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/23/KTN_News_Kenya.png', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
+              { name: 'Citizen TV', logo: '/media/citizen.avif', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
+              { name: 'Ramogi TV', logo: '/media/ramogi.avif', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
+              { name: 'Dr. King\'ori', logo: '/media/kingori.webp', link: 'https://www.youtube.com/watch?v=b5uMIBqAwD8', desc: 'Discussing the founder\'s story and building a premium Kenyan brand.' },
+              { name: 'KTN News', logo: '/media/ktn.webp', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
             ].map((media, i) => (
               <a key={i} href={media.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
                 <div style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <div style={{ height: '80px', width: '80px', marginBottom: '20px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
-                    <img src={media.logo} alt={media.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ height: '80px', width: '80px', marginBottom: '20px', borderRadius: '20%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
+                    <img src={media.logo} alt={media.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   </div>
                   <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
                   <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.6 }}>{media.desc}</p>
