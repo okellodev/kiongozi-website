@@ -17,6 +17,12 @@ export default function Home() {
   const [cart, setCart] = useState<{product: Product; variant: any; quantity: number}[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Checkout State
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+  const [orderForm, setOrderForm] = useState({ name: '', phone: '', email: '', address: '' });
+  const [orderComplete, setOrderComplete] = useState<{id: string, total: number} | null>(null);
   
   // Product Detail Modal
   const [selectedProduct, setSelectedProduct] = useState<ProductDetail | null>(null);
@@ -53,6 +59,40 @@ export default function Home() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (cart.length === 0) return;
+    
+    setIsSubmittingOrder(true);
+    try {
+      const { createOrder } = await import('@/lib/api');
+      const orderData = {
+        customer_name: orderForm.name,
+        customer_phone: orderForm.phone,
+        customer_email: orderForm.email,
+        shipping_address: orderForm.address,
+        brand_source: 'KIONGOZI',
+        items: cart.map(item => ({
+          variant_id: item.variant.id,
+          quantity: item.quantity
+        }))
+      };
+      
+      const res = await createOrder(orderData);
+      if (res.order_id) {
+        setOrderComplete({ id: res.order_id, total: res.total });
+        // Clear cart
+        setCart([]);
+        localStorage.removeItem('kiongozi-cart');
+      }
+    } catch (err) {
+      console.error("Order failed:", err);
+      alert("Failed to place order. Please try again.");
+    } finally {
+      setIsSubmittingOrder(false);
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem('kiongozi-cart', JSON.stringify(cart));
@@ -191,10 +231,36 @@ export default function Home() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        .product-card {
+          position: relative;
+          background: ${theme.surface} !important;
+          border: 1px solid ${theme.border} !important;
+          backdrop-filter: blur(10px);
+          transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        }
         .product-card:hover {
-          transform: translateY(-15px) !important;
+          transform: translateY(-12px) scale(1.02) !important;
           border-color: ${theme.primary} !important;
-          box-shadow: 0 30px 60px ${theme.primaryGlow} !important;
+          box-shadow: 0 40px 80px -20px ${theme.primaryGlow}, 0 0 0 1px ${theme.primary} !important;
+          z-index: 10;
+        }
+        .product-card:hover .product-image {
+          transform: scale(1.1);
+        }
+        .product-image-container {
+          overflow: hidden;
+          position: relative;
+        }
+        .product-image {
+          transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .artisan-badge {
+          background: rgba(10, 10, 10, 0.7);
+          backdrop-filter: blur(8px);
+          color: ${theme.gold};
+          border: 1px solid ${theme.gold};
+          letter-spacing: 2px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
         .section-title {
           font-family: var(--font-cormorant), serif;
@@ -558,27 +624,53 @@ export default function Home() {
             {filteredProducts.map((product) => (
               <div 
                 key={product.id} className="product-card"
-                style={{ background: theme.surface, borderRadius: '24px', overflow: 'hidden', border: `1px solid ${theme.border}`, transition: 'all 0.4s ease', cursor: 'pointer' }}
+                style={{ borderRadius: '24px', overflow: 'hidden', cursor: 'pointer' }}
                 onClick={() => openProductDetail(product.id)}
               >
-                <div style={{ position: 'relative', height: '320px', background: theme.surfaceLight }}>
+                {/* Image Container with Zoom Effect */}
+                <div className="product-image-container" style={{ height: '340px', background: theme.surfaceLight }}>
                   {product.image_url ? (
-                    <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img 
+                      src={product.image_url} 
+                      alt={product.name} 
+                      className="product-image"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
                   ) : (
                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.textMuted }}>No Image</div>
                   )}
+                  
+                  {/* Luxury Artisan Badge */}
                   <div style={{ position: 'absolute', top: '15px', left: '15px' }}>
-                    <span style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', color: theme.gold, fontSize: '0.7rem', fontWeight: 800, padding: '5px 12px', borderRadius: '20px', border: `1px solid ${theme.gold}` }}>
-                      {product.shoe_brand || 'ARTISAN'}
+                    <span className="artisan-badge" style={{ fontSize: '0.65rem', fontWeight: 800, padding: '6px 14px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                      {product.shoe_brand || 'Authentic Leather'}
                     </span>
                   </div>
+
+                  {/* Glass Overlay on hover (handled by CSS) */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 40%)', opacity: 0.6 }}></div>
                 </div>
-                <div style={{ padding: '24px' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>{product.name}</h3>
+
+                {/* Content Section */}
+                <div style={{ padding: '24px', position: 'relative' }}>
+                  <div style={{ marginBottom: '4px' }}>
+                    <span style={{ fontSize: '0.75rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '1px' }}>{product.category}</span>
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '15px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h3>
+                  
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.primary }}>KSh {product.min_price?.toLocaleString()}</span>
-                    <div style={{ width: '35px', height: '35px', borderRadius: '50%', border: `1px solid ${theme.primary}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.primary }}>
-                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M12 4v16m8-8H4" /></svg>
+                    <div>
+                      <p style={{ fontSize: '0.7rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 600 }}>Investment</p>
+                      <span style={{ fontSize: '1.3rem', fontWeight: 800, color: theme.primary }}>KSh {product.min_price?.toLocaleString()}</span>
+                    </div>
+                    <div style={{ 
+                      width: '44px', height: '44px', borderRadius: '50%', 
+                      background: `linear-gradient(135deg, ${theme.surfaceLight}, ${theme.surface})`,
+                      border: `1px solid ${theme.border}`, display: 'flex', 
+                      alignItems: 'center', justifyContent: 'center', color: theme.primary,
+                      boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
+                    }}>
+                      <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M12 4v16m8-8H4" /></svg>
                     </div>
                   </div>
                 </div>
@@ -838,7 +930,33 @@ export default function Home() {
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '2px' }}>{item.product.name}</p>
                       <p style={{ fontSize: '0.75rem', color: theme.textMuted, marginBottom: '8px' }}>Size: {item.variant.size} | {item.product.shoe_brand}</p>
-                      <p style={{ color: theme.primary, fontWeight: 700 }}>KSh {item.variant.price.toLocaleString()}</p>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', background: theme.dark, borderRadius: '8px', padding: '2px' }}>
+                          <button 
+                            onClick={() => {
+                              const newCart = [...cart];
+                              if (newCart[idx].quantity > 1) {
+                                newCart[idx].quantity -= 1;
+                                setCart(newCart);
+                              } else {
+                                removeFromCart(item.variant.id);
+                              }
+                            }}
+                            style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}
+                          >-</button>
+                          <span style={{ fontSize: '0.85rem', width: '20px', textAlign: 'center' }}>{item.quantity}</span>
+                          <button 
+                            onClick={() => {
+                              const newCart = [...cart];
+                              newCart[idx].quantity += 1;
+                              setCart(newCart);
+                            }}
+                            style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}
+                          >+</button>
+                        </div>
+                        <p style={{ color: theme.primary, fontWeight: 700, fontSize: '0.9rem' }}>KSh {(item.variant.price * item.quantity).toLocaleString()}</p>
+                      </div>
                     </div>
                     <button onClick={() => removeFromCart(item.variant.id)} style={{ background: 'rgba(255,68,68,0.1)', border: 'none', cursor: 'pointer', color: '#ff4444', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -856,13 +974,93 @@ export default function Home() {
                 </div>
                 <button 
                   onClick={() => {
-                    const message = `Hello, I'd like to order:\n${cart.map(item => `- ${item.product.name} (Size: ${item.variant.size}) x1`).join('\n')}\n\nTotal: KSh ${cartTotal.toLocaleString()}`;
-                    window.open(`https://wa.me/254740495890?text=${encodeURIComponent(message)}`, '_blank');
+                    setShowCart(false);
+                    setShowCheckout(true);
                   }}
                   style={{ width: '100%', padding: '18px', background: theme.primary, color: 'white', border: 'none', borderRadius: '15px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: `0 10px 30px ${theme.primaryGlow}` }}
                 >
-                  ORDER VIA WHATSAPP
+                  PROCEED TO CHECKOUT
                 </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Modal */}
+      {showCheckout && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 5000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(10px)' }} onClick={() => !isSubmittingOrder && setShowCheckout(false)}></div>
+          
+          <div style={{ position: 'relative', width: '100%', maxWidth: '500px', background: theme.surface, borderRadius: '32px', overflow: 'hidden', border: `1px solid ${theme.border}`, boxShadow: '0 50px 100px rgba(0,0,0,0.5)' }}>
+            {orderComplete ? (
+              <div style={{ padding: '60px 40px', textAlign: 'center' }}>
+                <div style={{ width: '80px', height: '80px', background: '#25D366', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 30px' }}>
+                  <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3"><path d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'white', marginBottom: '15px' }}>ORDER RECEIVED</h2>
+                <p style={{ color: theme.textMuted, marginBottom: '40px', lineHeight: 1.6 }}>Your order <b>{orderComplete.id}</b> is registered. Please complete payment via WhatsApp to start crafting.</p>
+                
+                <button 
+                  onClick={() => {
+                    const message = `Hi Kioo Ngozi, I've placed Order #${orderComplete.id} (Total: KSh ${orderComplete.total.toLocaleString()}). Please confirm my payment.`;
+                    window.open(`https://wa.me/254740495890?text=${encodeURIComponent(message)}`, '_blank');
+                    setShowCheckout(false);
+                    setOrderComplete(null);
+                  }}
+                  style={{ width: '100%', padding: '20px', background: '#25D366', color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem' }}
+                >
+                  CONFIRM ON WHATSAPP
+                </button>
+              </div>
+            ) : (
+              <div style={{ padding: '40px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                  <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: theme.gold, fontFamily: 'var(--font-cormorant), serif' }}>CHECKOUT</h2>
+                  <button onClick={() => setShowCheckout(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+
+                <form onSubmit={handleOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Full Name</label>
+                    <input 
+                      required type="text" value={orderForm.name} onChange={e => setOrderForm({...orderForm, name: e.target.value})}
+                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>WhatsApp Phone</label>
+                    <input 
+                      required type="tel" value={orderForm.phone} onChange={e => setOrderForm({...orderForm, phone: e.target.value})}
+                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none' }}
+                      placeholder="e.g. 0712..."
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Delivery Address</label>
+                    <textarea 
+                      required rows={2} value={orderForm.address} onChange={e => setOrderForm({...orderForm, address: e.target.value})}
+                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', resize: 'none' }}
+                      placeholder="Street, Apartment, City"
+                    />
+                  </div>
+
+                  <div style={{ marginTop: '10px', padding: '20px', background: 'rgba(255,255,255,0.03)', borderRadius: '15px', border: `1px solid ${theme.border}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '5px' }}>
+                      <span style={{ color: theme.textMuted }}>Total Payable</span>
+                      <span style={{ fontWeight: 800, color: 'white' }}>KSh {cartTotal.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit" disabled={isSubmittingOrder}
+                    style={{ width: '100%', padding: '20px', background: theme.primary, color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', marginTop: '10px', boxShadow: `0 10px 20px ${theme.primaryGlow}`, opacity: isSubmittingOrder ? 0.7 : 1 }}
+                  >
+                    {isSubmittingOrder ? 'SECURING ORDER...' : 'PLACE ORDER'}
+                  </button>
+                </form>
               </div>
             )}
           </div>

@@ -62,3 +62,21 @@ export async function newsletterSignup(email: string, firstName: string = '') {
   });
   return res.json();
 }
+
+export async function createOrder(orderData: {
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string;
+  shipping_address?: string;
+  brand_source: string;
+  items: { variant_id: number; quantity: number }[];
+}) {
+  const res = await fetch(`${API_BASE}/api/create-order/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderData),
+  });
+  return res.json();
+}
