@@ -200,13 +200,13 @@ export default function Home() {
   // Kioo Ngozi - Futuristic Dark Theme
   const theme = {
     primary: '#e95420',
-    primaryGlow: 'rgba(233, 84, 32, 0.4)',
-    dark: '#0a0a0a',
-    surface: '#111111',
-    surfaceLight: '#1a1a1a',
-    text: '#ffffff',
-    textMuted: '#888888',
-    border: 'rgba(255,255,255,0.1)',
+    primaryGlow: 'rgba(233, 84, 32, 0.3)',
+    dark: '#ffffff', // White
+    surface: '#faf8f5', // Warm white
+    surfaceLight: '#f0ebe5', // Warm light gray
+    text: '#1a1a1a', // Dark
+    textMuted: '#666666', // Medium gray
+    border: 'rgba(0,0,0,0.1)',
     gold: '#cfae81',
     accent: '#ff6b35',
   };
@@ -1013,7 +1013,11 @@ export default function Home() {
                   
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '15px', border: `1px solid ${theme.border}`, marginBottom: '30px' }}>
                     <h4 style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '1px' }}>Product Description</h4>
-                    <p style={{ color: theme.textMuted, lineHeight: 1.8, fontSize: '0.95rem', whiteSpace: 'pre-wrap' }}>{selectedProduct.description}</p>
+                    <div 
+                      style={{ color: theme.textMuted, lineHeight: 1.8, fontSize: '0.95rem' }}
+                      className="description-content"
+                      dangerouslySetInnerHTML={{ __html: selectedProduct.description }}
+                    />
                   </div>
                   
                   <div style={{ marginBottom: '30px' }}>
