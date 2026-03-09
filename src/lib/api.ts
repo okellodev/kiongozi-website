@@ -1,5 +1,5 @@
 // Kiongozi Website - API utilities
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://phoelix-inventory.onrender.com';
+const API_BASE = 'https://phoelix-inventory.onrender.com';
 
 export interface Product {
   id: number;
@@ -30,30 +30,50 @@ export async function getProducts(brand: string = 'KIONGOZI', category?: string)
   const params = new URLSearchParams({ brand });
   if (category) params.append('category', category);
   
-  const res = await fetch(`${API_BASE}/api/products/?${params}`, {
-    next: { revalidate: 60 }
-  });
-  const data = await res.json();
-  return data.products || [];
+  const url = `${API_BASE}/api/products/?${params}`;
+  console.log("Fetching products from:", url);
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+    return data.products || [];
+  } catch (err) {
+    console.error("Network Error fetching products:", err);
+    throw err;
+  }
 }
 
-export async function getProduct(id: number): Promise<ProductDetail> {
-  const res = await fetch(`${API_BASE}/api/products/${id}/`, {
-    next: { revalidate: 60 }
-  });
-  return res.json();
+export async function getProduct(id: number | string): Promise<ProductDetail> {
+  const url = `${API_BASE}/api/products/${id}/`;
+  console.log("Fetching product detail from:", url);
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    return res.json();
+  } catch (err) {
+    console.error(`Network Error fetching product ${id}:`, err);
+    throw err;
+  }
 }
 
 export async function getCategories(): Promise<{id: number; name: string}[]> {
-  const res = await fetch(`${API_BASE}/api/categories/`, {
-    next: { revalidate: 3600 }
-  });
-  const data = await res.json();
-  return data.categories || [];
+  const url = `${API_BASE}/api/categories/`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const data = await res.json();
+    return data.categories || [];
+  } catch (err) {
+    console.error("Network Error fetching categories:", err);
+    return [];
+  }
 }
 
 export async function newsletterSignup(email: string, firstName: string = '') {
-  const res = await fetch(`${API_BASE}/api/newsletter-signup/`, {
+  const url = `${API_BASE}/api/newsletter-signup/`;
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -69,9 +89,11 @@ export async function createOrder(orderData: {
   customer_email?: string;
   shipping_address?: string;
   brand_source: string;
+  delivery_method: string;
   items: { variant_id: number; quantity: number }[];
 }) {
-  const res = await fetch(`${API_BASE}/api/create-order/`, {
+  const url = `${API_BASE}/api/create-order/`;
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

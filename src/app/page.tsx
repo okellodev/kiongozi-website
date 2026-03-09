@@ -1,7 +1,17 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { getProducts, getCategories, getProduct, Product, ProductDetail } from '@/lib/api';
+import { getProducts, getCategories, getProduct, Product, ProductDetail, createOrder, newsletterSignup } from '@/lib/api';
+import { ShoppingBag, Menu, X, Instagram, Facebook, Youtube, Send, Truck, RotateCcw, MapPin, MessageSquare, ChevronRight, Phone, CheckCircle2, Twitter } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const TikTokIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} fill="currentColor" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.32h0q2.55,10.05,7.24,19.31h0a122.51,122.51,0,0,0,111.44,79.52Z"/></svg>
+);
+
+const XIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+);
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,11 +27,19 @@ export default function Home() {
   const [cart, setCart] = useState<{product: Product; variant: any; quantity: number}[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
 
   // Checkout State
   const [showCheckout, setShowCheckout] = useState(false);
   const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
-  const [orderForm, setOrderForm] = useState({ name: '', phone: '', email: '', address: '' });
+  const [orderForm, setOrderForm] = useState({ 
+    name: '', 
+    phone: '', 
+    email: '', 
+    address: '', 
+    delivery_method: 'DELIVERY' 
+  });
   const [orderComplete, setOrderComplete] = useState<{id: string, total: number} | null>(null);
   
   // Product Detail Modal
@@ -66,13 +84,13 @@ export default function Home() {
     
     setIsSubmittingOrder(true);
     try {
-      const { createOrder } = await import('@/lib/api');
       const orderData = {
         customer_name: orderForm.name,
         customer_phone: orderForm.phone,
         customer_email: orderForm.email,
         shipping_address: orderForm.address,
         brand_source: 'KIONGOZI',
+        delivery_method: orderForm.delivery_method,
         items: cart.map(item => ({
           variant_id: item.variant.id,
           quantity: item.quantity
@@ -162,7 +180,6 @@ export default function Home() {
     
     setIsSigningUp(true);
     try {
-      const { newsletterSignup } = await import('@/lib/api');
       const res = await newsletterSignup(email);
       setSignupStatus({
         message: res.coupon_code 
@@ -231,6 +248,21 @@ export default function Home() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255,255,255,0.02);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: ${theme.primary};
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: ${theme.gold};
+        }
+        
         .product-card {
           position: relative;
           background: ${theme.surface} !important;
@@ -291,12 +323,15 @@ export default function Home() {
       </div>
 
       {/* Announcement & Social Top Bar */}
-      <div style={{
-        background: `linear-gradient(90deg, ${theme.dark}, ${theme.surfaceLight})`,
-        padding: '8px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        fontSize: '0.7rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase',
-        position: 'relative', zIndex: 1010, borderBottom: `1px solid ${theme.border}`
-      }}>
+      <div 
+        className="hidden md:flex"
+        style={{
+          background: `linear-gradient(90deg, ${theme.dark}, ${theme.surfaceLight})`,
+          padding: '8px 40px', justifyContent: 'space-between', alignItems: 'center',
+          fontSize: '0.7rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase',
+          position: 'relative', zIndex: 1010, borderBottom: `1px solid ${theme.border}`
+        }}
+      >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <span>Proudly made in Kenya — by Kenyans, for the world.</span>
           <span style={{ opacity: 0.5 }}>|</span>
@@ -305,22 +340,32 @@ export default function Home() {
             Need help? Chat with us
           </a>
         </div>
-        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-          <a href="https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/kioo_ngozi_leather/" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-          <a href="https://www.youtube.com/@KiooNgoziLeather" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-          <a href="https://www.tiktok.com/@kioo_ngozi_leather" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.32h0q2.55,10.05,7.24,19.31h0a122.51,122.51,0,0,0,111.44,79.52Z"/></svg>
-          </a>
-          <a href="https://x.com/kioo_ngozi_" target="_blank" rel="noopener noreferrer" style={{ color: theme.text, transition: 'color 0.3s' }} onMouseEnter={e => e.currentTarget.style.color = theme.primary} onMouseLeave={e => e.currentTarget.style.color = theme.text}>
-            <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {[
+            { icon: Instagram, color: '#E4405F', href: 'https://www.instagram.com/kioo_ngozi_leather/' },
+            { icon: Facebook, color: '#1877F2', href: 'https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/' },
+            { icon: Youtube, color: '#FF0000', href: 'https://www.youtube.com/@KiooNgoziLeather' },
+            { icon: TikTokIcon, color: '#000000', href: 'https://www.tiktok.com/@kioo_ngozi_leather' },
+            { icon: XIcon, color: '#000000', href: 'https://x.com/kioo_ngozi_' },
+            { icon: MessageSquare, color: '#25D366', href: 'https://wa.me/254111955273' }
+          ].map((social, idx) => (
+            <a 
+              key={idx} href={social.href} target="_blank" rel="noopener noreferrer" 
+              style={{ 
+                width: '24px', height: '24px', borderRadius: '50%',
+                background: social.color === '#000000' ? '#ffffff' : 'transparent',
+                color: social.color === '#000000' ? '#000000' : social.color, 
+                transition: 'all 0.3s',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }} 
+              onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.2)'; if(social.color !== '#000000') e.currentTarget.style.color = '#ffffff'; }} 
+              onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; if(social.color !== '#000000') e.currentTarget.style.color = social.color; }}
+            >
+              <social.icon size={12} />
+            </a>
+          ))}
         </div>
       </div>
 
@@ -336,25 +381,44 @@ export default function Home() {
       {/* Header */}
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-        padding: scrolled ? '12px 40px' : '20px 40px',
+        padding: scrolled ? '12px 20px' : '20px 40px',
         background: scrolled ? 'rgba(10,10,10,0.85)' : 'transparent',
         backdropFilter: scrolled ? 'blur(20px)' : 'none',
         borderBottom: scrolled ? `1px solid ${theme.border}` : 'none',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center'
       }}>
+        {/* Mobile Menu Button */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '8px' }}
+          >
+            <Menu size={24} />
+          </button>
+          <button 
+            onClick={() => setShowSearchOverlay(true)}
+            style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '8px' }}
+          >
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+            </svg>
+          </button>
+        </div>
+
         {/* Logo */}
         <div style={{
-          width: scrolled ? '70px' : '90px',
-          height: scrolled ? '70px' : '90px',
+          width: scrolled ? '60px' : '90px',
+          height: scrolled ? '60px' : '90px',
           borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.primary}`,
           boxShadow: `0 0 20px ${theme.primaryGlow}`, transition: 'all 0.3s ease',
           display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+          position: 'absolute', left: '50%', transform: 'translateX(-50%)'
         }} onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
           <img src="/kiongozi_logo.png" alt="Kioo Ngozi" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.8)' }} />
         </div>
 
-        <nav style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+        <nav style={{ display: 'none', gap: '30px', alignItems: 'center' }} className="md:flex">
           {['HOME', 'SHOP', 'OUR CRAFT', 'CONTACT'].map((item) => (
             <a 
               key={item} href={item === 'SHOP' ? '#products' : (item === 'OUR CRAFT' ? '#craft' : '#')}
@@ -387,14 +451,6 @@ export default function Home() {
             <svg style={{ position: 'absolute', left: '15px' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke={searchQuery ? theme.primary : theme.textMuted} strokeWidth="2.5">
               <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
             </svg>
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                style={{ position: 'absolute', right: '12px', background: 'none', border: 'none', color: theme.textMuted, cursor: 'pointer', padding: '5px' }}
-              >
-                ✕
-              </button>
-            )}
           </div>
         </nav>
 
@@ -406,16 +462,102 @@ export default function Home() {
             display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s ease'
           }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke={theme.primary} strokeWidth="2">
-            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-          <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>CART</span>
+          <ShoppingBag size={20} stroke={theme.primary} strokeWidth={2} />
+          <span style={{ fontWeight: 600, fontSize: '0.85rem' }} className="hidden sm:inline">CART</span>
           {cart.length > 0 && (
             <span style={{ background: theme.primary, color: 'white', fontSize: '0.7rem', fontWeight: 'bold', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {cart.reduce((a, b) => a + b.quantity, 0)}
             </span>
           )}
         </button>
+
+        {/* Mobile Search Overlay */}
+        <AnimatePresence>
+          {showSearchOverlay && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              style={{
+                position: 'fixed', inset: 0, zIndex: 7000, background: 'rgba(10,10,10,0.98)',
+                display: 'flex', flexDirection: 'column', padding: '40px 20px'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
+                <button onClick={() => setShowSearchOverlay(false)} style={{ background: 'none', border: 'none', color: 'white' }}>
+                  <X size={32} />
+                </button>
+              </div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, marginBottom: '20px', fontFamily: 'var(--font-cormorant), serif', letterSpacing: '2px' }}>SEARCH PIECES</h2>
+              <div style={{ position: 'relative' }}>
+                <input 
+                  autoFocus
+                  type="text"
+                  placeholder="Bags, Belts, Wallets..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%', background: 'transparent', border: 'none', borderBottom: `2px solid ${theme.primary}`,
+                    padding: '20px 0', fontSize: '2rem', color: 'white', outline: 'none'
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && setShowSearchOverlay(false)}
+                />
+                <button 
+                  onClick={() => setShowSearchOverlay(false)}
+                  style={{
+                    position: 'absolute', right: 0, bottom: '20px', background: theme.primary, color: 'white',
+                    border: 'none', padding: '10px 20px', borderRadius: '30px', fontWeight: 700
+                  }}
+                >
+                  SEARCH
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              style={{
+                position: 'fixed', inset: 0, zIndex: 6000, background: theme.dark,
+                display: 'flex', flexDirection: 'column', padding: '40px'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
+                <button onClick={() => setIsMobileMenuOpen(false)} style={{ background: 'none', border: 'none', color: 'white' }}>
+                  <X size={32} />
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                {['HOME', 'SHOP', 'OUR CRAFT', 'CONTACT'].map((item) => (
+                  <a 
+                    key={item} href={item === 'SHOP' ? '#products' : (item === 'OUR CRAFT' ? '#craft' : '#')}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{ color: 'white', textDecoration: 'none', fontWeight: 800, fontSize: '2rem', fontFamily: 'var(--font-cormorant), serif', letterSpacing: '2px' }}
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 'auto', borderTop: `1px solid ${theme.border}`, paddingTop: '30px' }}>
+                <p style={{ color: theme.gold, fontWeight: 700, marginBottom: '20px', letterSpacing: '2px' }}>FOLLOW THE JOURNEY</p>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                  <Instagram size={24} color="white" />
+                  <Facebook size={24} color="white" />
+                  <Youtube size={24} color="white" />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Hero */}
@@ -713,7 +855,7 @@ export default function Home() {
       <section style={{ padding: '100px 20px', position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h2 className="section-title">AS SEEN ON</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px', marginBottom: '100px' }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 mb-24 md:mb-32">
             {[
               { name: 'Citizen TV', logo: '/media/citizen.avif', link: 'https://www.youtube.com/watch?v=8zZAjbLyHVM', desc: 'Showcased on "Made in Kenya" segment for our craftsmanship and vision.' },
               { name: 'Ramogi TV', logo: '/media/ramogi.avif', link: 'https://www.youtube.com/watch?v=itS2Palyct8', desc: 'Featured on "Pok Opogore" segment discussing local vs imported goods.' },
@@ -721,15 +863,15 @@ export default function Home() {
               { name: 'KTN News', logo: '/media/ktn.webp', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
             ].map((media, i) => (
               <a key={i} href={media.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
-                <div style={{ padding: '30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                <div style={{ padding: '20px md:padding:30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <div style={{ height: '80px', width: '80px', marginBottom: '20px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
-                    <img src={media.logo} alt={media.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <div style={{ height: '60px md:height:80px', width: '60px md:width:80px', marginBottom: '15px md:marginBottom:20px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }} className="w-16 h-16 md:w-20 md:h-20">
+                    <img src={media.logo} alt={media.name} style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
                   </div>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '15px' }}>{media.name}</span>
-                  <p style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.6 }}>{media.desc}</p>
+                  <span style={{ fontSize: '1rem md:fontSize:1.2rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '10px md:marginBottom:15px' }}>{media.name}</span>
+                  <p style={{ color: theme.textMuted, fontSize: '0.75rem md:fontSize:0.85rem', lineHeight: 1.5 }} className="hidden sm:block">{media.desc}</p>
                 </div>
               </a>
             ))}
@@ -753,92 +895,95 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer style={{ background: theme.surface, padding: '100px 40px 60px', borderTop: `3px solid ${theme.primary}`, position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '80px' }}>
-          <div>
-            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: theme.gold, marginBottom: '20px' }}>KIOO NGOZI</h3>
-            <p style={{ color: theme.textMuted, lineHeight: 1.8, marginBottom: '30px' }}>The mark of authentic Kenyan craftsmanship. Excellence in leather since 2020.</p>
-            <p style={{ color: theme.text, fontSize: '0.9rem', marginBottom: '10px' }}>🏬 Mithoo Business Center, Moi Ave</p>
-            <p style={{ color: theme.textMuted, fontSize: '0.9rem', marginLeft: '25px' }}>3rd Flr Shop T45, Nairobi</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px' }}>
+      <footer style={{ background: theme.surface, padding: '80px 20px 40px', borderTop: `1px solid ${theme.border}`, position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '60px', marginBottom: '60px' }}>
+            
+            {/* Brand Column */}
             <div>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SUPPORT</h4>
-              <div style={{ color: theme.textMuted, fontSize: '0.85rem', lineHeight: 1.8, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <a href="https://api.whatsapp.com/send/?phone=254111955273&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <svg width="18" height="18" fill="#25D366" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  WhatsApp Support
-                </a>
-                <a href="tel:+254111955273" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <svg width="18" height="18" fill="#4CAF50" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                  +254 111 955 273
-                </a>
-                <a href="https://api.whatsapp.com/send/?phone=254111955273&text=I%20need%20expert%20advice%20on%20leather" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <svg width="18" height="18" fill={theme.gold} viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                  Talk to an Advisor
-                </a>
-                <span>🚚 Delivery: 24-48 hrs</span>
-                <span>🔄 Easy Exchanges</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: theme.gold, marginBottom: '20px', fontFamily: 'var(--font-cormorant), serif', letterSpacing: '2px' }}>KIOO NGOZI</h3>
+              <p style={{ color: theme.textMuted, lineHeight: 1.8, marginBottom: '25px', fontSize: '0.9rem' }}>
+                Authentic Kenyan leather craftsmanship. Heritage pieces designed to age beautifully and tell your story of leadership.
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '12px', alignItems: 'center' }}>
+                {[
+                  { icon: Instagram, color: '#E4405F', href: 'https://www.instagram.com/kioo_ngozi_leather/' },
+                  { icon: Facebook, color: '#1877F2', href: 'https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/' },
+                  { icon: Youtube, color: '#FF0000', href: 'https://www.youtube.com/@KiooNgoziLeather' },
+                  { icon: TikTokIcon, color: '#000000', href: 'https://www.tiktok.com/@kioo_ngozi_leather' },
+                  { icon: XIcon, color: '#000000', href: 'https://x.com/kioo_ngozi_' },
+                  { icon: MessageSquare, color: '#25D366', href: 'https://wa.me/254111955273' }
+                ].map((social, idx) => (
+                  <a 
+                    key={idx} href={social.href} target="_blank" rel="noopener noreferrer"
+                    style={{ 
+                      width: '36px', height: '36px', borderRadius: '50%', 
+                      background: social.color === '#000000' ? '#ffffff' : 'rgba(255,255,255,0.05)', 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                      color: social.color === '#000000' ? '#000000' : social.color, 
+                      transition: 'all 0.3s', border: social.color === '#000000' ? 'none' : `1px solid ${theme.border}` 
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.boxShadow = `0 0 15px ${social.color}`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}
+                  >
+                    <social.icon size={18} />
+                  </a>
+                ))}
               </div>
             </div>
+
+            {/* Support Column */}
             <div>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SHOP</h4>
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {categories.slice(0, 4).map(c => <li key={c.id} style={{ color: theme.textMuted, fontSize: '0.85rem', cursor: 'pointer' }} onClick={() => setSelectedCategory(c.name)}>{c.name}</li>)}
-              </ul>
-            </div>
-            <div>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SOCIAL</h4>
-              <div style={{ display: 'flex', gap: '15px' }}>
-                <a href="https://www.facebook.com/people/Kioo-Ngozi-Leather/61582796257082/" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>SUPPORT</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <a href="https://wa.me/254111955273" style={{ color: theme.textMuted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}>
+                  <MessageSquare size={16} color="#25D366" /> WhatsApp Support
                 </a>
-                <a href="https://www.instagram.com/kioo_ngozi_leather/" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <a href="tel:+254111955273" style={{ color: theme.textMuted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}>
+                  <Phone size={16} color={theme.primary} /> +254 111 955 273
                 </a>
-                <a href="https://www.youtube.com/@KiooNgoziLeather" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                </a>
-                <a href="https://www.tiktok.com/@kioo_ngozi_leather" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.32h0q2.55,10.05,7.24,19.31h0a122.51,122.51,0,0,0,111.44,79.52Z"/></svg>
-                </a>
-                <a href="https://x.com/kioo_ngozi_" target="_blank" rel="noopener noreferrer" style={{ width: '40px', height: '40px', borderRadius: '10px', background: theme.surfaceLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = theme.primary} onMouseLeave={e => e.currentTarget.style.background = theme.surfaceLight}>
-                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                </a>
+                <div style={{ color: theme.textMuted, display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '0.9rem' }}>
+                  <MapPin size={16} color={theme.primary} style={{ marginTop: '4px' }} /> 
+                  <span>Mithoo Business Center, Moi Ave<br/>3rd Flr Shop T45, Nairobi</span>
+                </div>
               </div>
             </div>
+
+            {/* Quick Links */}
             <div>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '25px', color: 'white' }}>SUBSCRIBE</h4>
-              <p style={{ color: theme.textMuted, fontSize: '0.8rem', marginBottom: '15px' }}>Join our community for 15% off your first rare piece.</p>
-              <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>EXPLORE</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {['Shop All', 'Our Story', 'Shipping & Returns', 'Leather Care'].map((link) => (
+                  <a key={link} href="#" style={{ color: theme.textMuted, textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }}>{link}</a>
+                ))}
+              </div>
+            </div>
+
+            {/* Newsletter */}
+            <div>
+              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>NEWSLETTER</h4>
+              <p style={{ color: theme.textMuted, fontSize: '0.85rem', marginBottom: '20px' }}>Join the inner circle for 15% off your first piece.</p>
+              <form onSubmit={handleSignup} style={{ display: 'flex', borderBottom: `1px solid ${theme.border}`, paddingBottom: '10px' }}>
                 <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email" 
-                  required
-                  style={{ background: theme.dark, border: `1px solid ${theme.border}`, padding: '12px', borderRadius: '10px', width: '100%', color: 'white', outline: 'none' }} 
+                  type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address" required
+                  style={{ background: 'transparent', border: 'none', color: 'white', outline: 'none', width: '100%', fontSize: '0.9rem' }}
                 />
-                <button 
-                  type="submit" 
-                  disabled={isSigningUp}
-                  style={{ background: theme.primary, color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', opacity: isSigningUp ? 0.7 : 1 }}
-                >
-                  {isSigningUp ? 'SUBSCRIBING...' : 'GET MY 15% OFF'}
+                <button type="submit" style={{ background: 'none', border: 'none', color: theme.primary, cursor: 'pointer' }}>
+                  <Send size={18} />
                 </button>
               </form>
-              {signupStatus.message && (
-                <p style={{ marginTop: '15px', fontSize: '0.8rem', color: signupStatus.type === 'success' ? '#25D366' : '#ff4444', fontWeight: 600 }}>
-                  {signupStatus.message}
-                </p>
-              )}
             </div>
+
           </div>
-          <div style={{ marginTop: '60px', paddingTop: '30px', borderTop: `1px solid ${theme.border}`, textAlign: 'center', gridColumn: 'span 2' }}>
-            <p style={{ color: theme.textMuted, fontSize: '0.8rem', marginBottom: '15px' }}>&copy; 2026 KIOO NGOZI LEATHER. ALL RIGHTS RESERVED. REAL LEATHER GUARANTEE.</p>
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', fontSize: '0.75rem' }}>
-              <a href="/privacy" style={{ color: theme.textMuted, textDecoration: 'none' }}>Privacy Policy</a>
-              <a href="/terms" style={{ color: theme.textMuted, textDecoration: 'none' }}>Terms of Service</a>
+
+          <div style={{ paddingTop: '30px', borderTop: `1px solid ${theme.border}`, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
+            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', letterSpacing: '1px' }}>
+              &copy; {new Date().getFullYear()} KIOO NGOZI LEATHER. CRAFTED IN KENYA.
+            </p>
+            <div style={{ display: 'flex', gap: '25px' }}>
+              <a href="/privacy" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none', fontSize: '0.75rem' }}>Privacy Policy</a>
+              <a href="/terms" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none', fontSize: '0.75rem' }}>Terms of Service</a>
             </div>
           </div>
         </div>
@@ -853,40 +998,46 @@ export default function Home() {
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', height: '100%', overflow: 'auto' }} className="no-scrollbar">
-              <div style={{ height: '600px', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] h-full overflow-auto custom-scrollbar">
+              <div style={{ background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="h-[350px] md:h-[600px]">
                 {selectedProduct.image_url ? (
                   <img src={selectedProduct.image_url} alt={selectedProduct.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Image</div>
                 )}
               </div>
-              <div style={{ padding: '50px', display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: theme.primary, fontWeight: 700, fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '10px' }}>{selectedProduct.shoe_brand || 'Artisan Handcrafted'}</span>
-                <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '20px', lineHeight: 1, fontFamily: 'var(--font-cormorant), serif' }}>{selectedProduct.name}</h2>
-                <p style={{ color: theme.textMuted, lineHeight: 1.6, marginBottom: '30px', fontSize: '0.95rem' }}>{selectedProduct.description}</p>
-                
-                <div style={{ marginBottom: '30px' }}>
-                  <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', marginBottom: '15px', textTransform: 'uppercase' }}>Available Sizes</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                    {selectedProduct.variants.map((v) => (
-                      <button 
-                        key={v.id} disabled={v.stock_quantity <= 0} onClick={() => setSelectedVariant(v)}
-                        style={{
-                          padding: '12px 20px', borderRadius: '12px', cursor: v.stock_quantity > 0 ? 'pointer' : 'not-allowed', border: `2px solid ${selectedVariant?.id === v.id ? theme.primary : theme.border}`,
-                          background: selectedVariant?.id === v.id ? theme.primary : 'transparent',
-                          color: 'white', opacity: v.stock_quantity > 0 ? 1 : 0.3, transition: 'all 0.2s ease', fontWeight: 600
-                        }}
-                      >
-                        {v.size}
-                      </button>
-                    ))}
+              <div className="p-8 md:p-12 flex flex-col h-full relative">
+                <div className="flex-1 overflow-auto custom-scrollbar pr-4 pb-24 md:pb-0">
+                  <span style={{ color: theme.primary, fontWeight: 700, fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '10px', display: 'block' }}>{selectedProduct.shoe_brand || 'Artisan Handcrafted'}</span>
+                  <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '20px', lineHeight: 1, fontFamily: 'var(--font-cormorant), serif' }}>{selectedProduct.name}</h2>
+                  
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '15px', border: `1px solid ${theme.border}`, marginBottom: '30px' }}>
+                    <h4 style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '1px' }}>Product Description</h4>
+                    <p style={{ color: theme.textMuted, lineHeight: 1.8, fontSize: '0.95rem', whiteSpace: 'pre-wrap' }}>{selectedProduct.description}</p>
+                  </div>
+                  
+                  <div style={{ marginBottom: '30px' }}>
+                    <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', marginBottom: '15px', textTransform: 'uppercase' }}>Available Sizes</h4>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                      {selectedProduct.variants.map((v) => (
+                        <button 
+                          key={v.id} disabled={v.stock_quantity <= 0} onClick={() => setSelectedVariant(v)}
+                          style={{
+                            padding: '12px 20px', borderRadius: '12px', cursor: v.stock_quantity > 0 ? 'pointer' : 'not-allowed', border: `2px solid ${selectedVariant?.id === v.id ? theme.primary : theme.border}`,
+                            background: selectedVariant?.id === v.id ? theme.primary : 'transparent',
+                            color: 'white', opacity: v.stock_quantity > 0 ? 1 : 0.3, transition: 'all 0.2s ease', fontWeight: 600
+                          }}
+                        >
+                          {v.size}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px', background: 'rgba(255,255,255,0.03)', borderRadius: '24px', border: `1px solid ${theme.border}` }}>
+                <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px', background: theme.surface, borderRadius: '24px', border: `1px solid ${theme.border}`, boxShadow: '0 -10px 30px rgba(0,0,0,0.5)', position: 'absolute', bottom: '20px', left: '20px', right: '20px', zIndex: 10 }} className="md:static md:mt-[30px] md:shadow-none md:bg-[rgba(255,255,255,0.05)]">
                   <div>
-                    <p style={{ fontSize: '0.7rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 700 }}>Price</p>
+                    <p style={{ fontSize: '0.7rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 700 }}>Investment</p>
                     <p style={{ fontSize: '1.8rem', fontWeight: 800, color: 'white' }}>KSh {selectedVariant?.price.toLocaleString()}</p>
                   </div>
                   <button 
@@ -907,8 +1058,8 @@ export default function Home() {
       {showCart && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 4000, display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)' }} onClick={() => setShowCart(false)}></div>
-          <div style={{ position: 'relative', width: '100%', maxWidth: '450px', background: theme.surface, height: '100%', display: 'flex', flexDirection: 'column', borderLeft: `1px solid ${theme.border}`, boxShadow: '-20px 0 50px rgba(0,0,0,0.5)' }}>
-            <div style={{ padding: '30px', borderBottom: `1px solid ${theme.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: '450px', background: theme.surface, height: '100%', display: 'flex', flexDirection: 'column', borderLeft: `1px solid ${theme.border}`, boxShadow: '-20px 0 50px rgba(0,0,0,0.5)' }} className="w-full sm:max-w-[450px]">
+            <div style={{ padding: '20px md:padding:30px', borderBottom: `1px solid ${theme.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="p-5 md:p-8">
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, fontFamily: 'var(--font-cormorant), serif' }}>YOUR COLLECTION</h3>
               <button onClick={() => setShowCart(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}>
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
@@ -996,69 +1147,86 @@ export default function Home() {
             {orderComplete ? (
               <div style={{ padding: '60px 40px', textAlign: 'center' }}>
                 <div style={{ width: '80px', height: '80px', background: '#25D366', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 30px' }}>
-                  <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3"><path d="M5 13l4 4L19 7" /></svg>
+                  <CheckCircle2 size={40} color="white" />
                 </div>
-                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'white', marginBottom: '15px' }}>ORDER RECEIVED</h2>
-                <p style={{ color: theme.textMuted, marginBottom: '40px', lineHeight: 1.6 }}>Your order <b>{orderComplete.id}</b> is registered. Please complete payment via WhatsApp to start crafting.</p>
+                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'white', marginBottom: '15px', fontFamily: 'var(--font-cormorant), serif' }}>ORDER RECEIVED</h2>
+                <p style={{ color: theme.textMuted, marginBottom: '40px', lineHeight: 1.6 }}>Your order <b>{orderComplete.id}</b> is registered. We've redirected you to WhatsApp to complete payment and finalize your piece.</p>
                 
                 <button 
                   onClick={() => {
                     const message = `Hi Kioo Ngozi, I've placed Order #${orderComplete.id} (Total: KSh ${orderComplete.total.toLocaleString()}). Please confirm my payment.`;
-                    window.open(`https://wa.me/254740495890?text=${encodeURIComponent(message)}`, '_blank');
+                    window.open(`https://wa.me/254111955273?text=${encodeURIComponent(message)}`, '_blank');
                     setShowCheckout(false);
                     setOrderComplete(null);
                   }}
-                  style={{ width: '100%', padding: '20px', background: '#25D366', color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem' }}
+                  style={{ width: '100%', padding: '20px', background: '#25D366', color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
                 >
-                  CONFIRM ON WHATSAPP
+                  <MessageSquare size={20} /> CONFIRM ON WHATSAPP
                 </button>
               </div>
             ) : (
               <div style={{ padding: '40px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                  <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: theme.gold, fontFamily: 'var(--font-cormorant), serif' }}>CHECKOUT</h2>
+                  <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: theme.gold, fontFamily: 'var(--font-cormorant), serif', letterSpacing: '2px' }}>CHECKOUT</h2>
                   <button onClick={() => setShowCheckout(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
-                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
+                    <X size={24} />
                   </button>
                 </div>
 
                 <form onSubmit={handleOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                  <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Full Name</label>
-                    <input 
-                      required type="text" value={orderForm.name} onChange={e => setOrderForm({...orderForm, name: e.target.value})}
-                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none' }}
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>Full Name</label>
+                      <input 
+                        required type="text" value={orderForm.name} onChange={e => setOrderForm({...orderForm, name: e.target.value})}
+                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', fontSize: '0.9rem' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>WhatsApp Phone</label>
+                      <input 
+                        required type="tel" value={orderForm.phone} onChange={e => setOrderForm({...orderForm, phone: e.target.value})}
+                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', fontSize: '0.9rem' }}
+                        placeholder="0712..."
+                      />
+                    </div>
                   </div>
+
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>WhatsApp Phone</label>
-                    <input 
-                      required type="tel" value={orderForm.phone} onChange={e => setOrderForm({...orderForm, phone: e.target.value})}
-                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none' }}
-                      placeholder="e.g. 0712..."
-                    />
+                    <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>Delivery Method</label>
+                    <select 
+                      value={orderForm.delivery_method} 
+                      onChange={e => setOrderForm({...orderForm, delivery_method: e.target.value})}
+                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', appearance: 'none', cursor: 'pointer', fontSize: '0.9rem' }}
+                    >
+                      <option value="DELIVERY">Doorstep Delivery (24-48 hrs)</option>
+                      <option value="PICKUP">In-Store Pickup (Mithoo Center)</option>
+                    </select>
                   </div>
-                  <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Delivery Address</label>
-                    <textarea 
-                      required rows={2} value={orderForm.address} onChange={e => setOrderForm({...orderForm, address: e.target.value})}
-                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', resize: 'none' }}
-                      placeholder="Street, Apartment, City"
-                    />
-                  </div>
+
+                  {orderForm.delivery_method === 'DELIVERY' && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                      <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>Delivery Address</label>
+                      <textarea 
+                        required rows={2} value={orderForm.address} onChange={e => setOrderForm({...orderForm, address: e.target.value})}
+                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', resize: 'none', fontSize: '0.9rem' }}
+                        placeholder="Street, Apartment, City"
+                      />
+                    </motion.div>
+                  )}
 
                   <div style={{ marginTop: '10px', padding: '20px', background: 'rgba(255,255,255,0.03)', borderRadius: '15px', border: `1px solid ${theme.border}` }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '5px' }}>
-                      <span style={{ color: theme.textMuted }}>Total Payable</span>
-                      <span style={{ fontWeight: 800, color: 'white' }}>KSh {cartTotal.toLocaleString()}</span>
+                      <span style={{ color: theme.textMuted }}>Total Investment</span>
+                      <span style={{ fontWeight: 800, color: theme.gold }}>KSh {cartTotal.toLocaleString()}</span>
                     </div>
                   </div>
 
                   <button 
                     type="submit" disabled={isSubmittingOrder}
-                    style={{ width: '100%', padding: '20px', background: theme.primary, color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', marginTop: '10px', boxShadow: `0 10px 20px ${theme.primaryGlow}`, opacity: isSubmittingOrder ? 0.7 : 1 }}
+                    style={{ width: '100%', padding: '20px', background: theme.primary, color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', marginTop: '10px', boxShadow: `0 10px 20px ${theme.primaryGlow}`, opacity: isSubmittingOrder ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.3s' }}
                   >
-                    {isSubmittingOrder ? 'SECURING ORDER...' : 'PLACE ORDER'}
+                    {isSubmittingOrder ? <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div> : <><Truck size={20} /> PLACE ORDER</>}
                   </button>
                 </form>
               </div>
