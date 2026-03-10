@@ -197,18 +197,18 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.variant.price || 0) * item.quantity, 0);
 
-  // Kioo Ngozi - Darker Brown/Cream Theme
+  // Kioo Ngozi - Light Cream/Gold Theme
   const theme = {
-    primary: '#9c310d', // Deep Burnt Orange
-    primaryGlow: 'rgba(156, 49, 13, 0.2)',
-    dark: '#e8dfd5', // Richer, darker cream background
-    surface: '#d9cfc2', // Tan surface
-    surfaceLight: '#c4b8a8', // Deep tan surface
-    text: '#1a1412', // Deepest dark brown (nearly black)
-    textMuted: '#4a3f39', // Darker medium brown
-    border: 'rgba(26, 20, 18, 0.2)',
-    gold: '#6b563f', // Dark deep gold
-    accent: '#8e2e0c',
+    primary: '#e95420',
+    primaryGlow: 'rgba(233, 84, 32, 0.3)',
+    dark: '#faf8f5', // Original light cream
+    surface: '#f3ece4', // Warm cream
+    surfaceLight: '#ebe5dc', // Slightly darker cream
+    text: '#1a1412', // Darkest dark brown
+    textMuted: '#666666', // Medium gray
+    border: 'rgba(0,0,0,0.1)',
+    gold: '#cfae81', // The gold color from "Step into Leadership"
+    accent: '#ff6b35',
   };
 
   if (loading) {
@@ -297,10 +297,11 @@ export default function Home() {
         .section-title {
           font-family: var(--font-cormorant), serif;
           font-size: clamp(2.5rem, 6vw, 4rem);
-          font-weight: 700;
-          color: ${theme.gold};
-          margin-bottom: 2rem;
+          color: ${theme.gold} !important;
           text-align: center;
+          margin-bottom: 60px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
         }
       `}</style>
 
@@ -653,7 +654,7 @@ export default function Home() {
               <div key={i} style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', padding: '30px', background: theme.surface, borderRadius: '24px', border: `1px solid ${theme.border}` }}>
                 <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: theme.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800, flexShrink: 0 }}>{item.step}</div>
                 <div>
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '10px' }}>{item.title}</h3>
+                  <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '10px', color: theme.gold }}>{item.title}</h3>
                   <p style={{ color: theme.textMuted, lineHeight: 1.6 }}>{item.desc}</p>
                 </div>
               </div>
@@ -798,7 +799,7 @@ export default function Home() {
                   <div style={{ marginBottom: '4px' }}>
                     <span style={{ fontSize: '0.75rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '1px' }}>{product.category}</span>
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '15px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.name}</h3>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '15px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: theme.gold }}>{product.name}</h3>
                   
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
@@ -934,7 +935,7 @@ export default function Home() {
 
             {/* Support Column */}
             <div>
-              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>SUPPORT</h4>
+              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>SUPPORT</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                 <a href="https://wa.me/254111955273" style={{ color: theme.textMuted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}>
                   <MessageSquare size={16} color="#25D366" /> WhatsApp Support
@@ -951,7 +952,7 @@ export default function Home() {
 
             {/* Quick Links */}
             <div>
-              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>EXPLORE</h4>
+              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>EXPLORE</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {['Shop All', 'Our Story', 'Shipping & Returns', 'Leather Care'].map((link) => (
                   <a key={link} href="#" style={{ color: theme.textMuted, textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }}>{link}</a>
@@ -961,13 +962,13 @@ export default function Home() {
 
             {/* Newsletter */}
             <div>
-              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>NEWSLETTER</h4>
+              <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>NEWSLETTER</h4>
               <p style={{ color: theme.textMuted, fontSize: '0.85rem', marginBottom: '20px' }}>Join the inner circle for 15% off your first piece.</p>
               <form onSubmit={handleSignup} style={{ display: 'flex', borderBottom: `1px solid ${theme.border}`, paddingBottom: '10px' }}>
                 <input 
                   type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email address" required
-                  style={{ background: 'transparent', border: 'none', color: 'white', outline: 'none', width: '100%', fontSize: '0.9rem' }}
+                  style={{ background: 'transparent', border: 'none', color: theme.gold, outline: 'none', width: '100%', fontSize: '0.9rem' }}
                 />
                 <button type="submit" style={{ background: 'none', border: 'none', color: theme.primary, cursor: 'pointer' }}>
                   <Send size={18} />
@@ -1009,7 +1010,7 @@ export default function Home() {
               <div className="p-8 md:p-12 flex flex-col h-full relative">
                 <div className="flex-1 overflow-auto custom-scrollbar pr-4 pb-24 md:pb-0">
                   <span style={{ color: theme.primary, fontWeight: 700, fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '10px', display: 'block' }}>{selectedProduct.shoe_brand || 'Artisan Handcrafted'}</span>
-                  <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '20px', lineHeight: 1, fontFamily: 'var(--font-cormorant), serif' }}>{selectedProduct.name}</h2>
+                   <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '20px', lineHeight: 1, fontFamily: 'var(--font-cormorant), serif', color: theme.gold }}>{selectedProduct.name}</h2>
                   
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '15px', border: `1px solid ${theme.border}`, marginBottom: '30px' }}>
                     <h4 style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '1px' }}>Product Description</h4>
@@ -1021,7 +1022,7 @@ export default function Home() {
                   </div>
                   
                   <div style={{ marginBottom: '30px' }}>
-                    <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', marginBottom: '15px', textTransform: 'uppercase' }}>Available Sizes</h4>
+                    <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: theme.gold, marginBottom: '15px', textTransform: 'uppercase' }}>Available Sizes</h4>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                       {selectedProduct.variants.map((v) => (
                         <button 
@@ -1041,8 +1042,8 @@ export default function Home() {
 
                 <div style={{ marginTop: '30px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px', background: theme.surface, borderRadius: '24px', border: `1px solid ${theme.border}`, boxShadow: '0 -10px 30px rgba(0,0,0,0.5)', position: 'absolute', bottom: '20px', left: '20px', right: '20px', zIndex: 10 }} className="md:static md:mt-[30px] md:shadow-none md:bg-[rgba(255,255,255,0.05)]">
                   <div>
-                    <p style={{ fontSize: '0.7rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 700 }}>Investment</p>
-                    <p style={{ fontSize: '1.8rem', fontWeight: 800, color: 'white' }}>KSh {selectedVariant?.price.toLocaleString()}</p>
+                    <p style={{ fontSize: '0.7rem', color: theme.textMuted, textTransform: 'uppercase', fontWeight: 600 }}>Investment</p>
+                    <p style={{ fontSize: '1.8rem', fontWeight: 800, color: theme.gold }}>KSh {selectedVariant?.price.toLocaleString()}</p>
                   </div>
                   <button 
                     onClick={() => addToCart(selectedProduct, selectedVariant)}
