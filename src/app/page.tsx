@@ -13,6 +13,12 @@ const XIcon = ({ size = 18 }) => (
   <svg width={size} height={size} fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
 );
 
+const WhatsAppIcon = ({ size = 18, color = "currentColor" }) => (
+  <svg width={size} height={size} fill={color} viewBox="0 0 24 24">
+    <path d="M12.012 2c-5.508 0-9.987 4.479-9.987 9.987 0 1.757.463 3.407 1.27 4.843l-1.35 4.931 5.048-1.324c1.401.763 2.996 1.198 4.69 1.198 5.508 0 9.987-4.479 9.987-9.987 0-5.508-4.479-9.987-9.987-9.987zm6.495 14.186c-.267.753-1.324 1.372-2.18 1.455-.612.059-1.407.091-2.28-.184-3.692-1.157-6.082-4.904-6.267-5.151-.184-.246-1.503-2.001-1.503-3.817 0-1.815.952-2.709 1.29-3.074.338-.365.739-.456.985-.456.246 0 .493.001.708.01.21.01.493-.082.77.587.277.67.954 2.321 1.037 2.485.082.164.137.356.028.574-.11.219-.164.356-.329.547-.164.192-.345.429-.493.574-.164.164-.338.344-.146.678.192.338.854 1.407 1.83 2.278.977.871 1.802 1.141 2.131 1.305.329.164.52.137.712-.082.192-.219.822-.958 1.041-1.287.219-.329.438-.274.739-.164.3.11 1.917.904 2.246 1.068.329.164.548.246.63.383.082.137.082.794-.185 1.547z"/>
+  </svg>
+);
+
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{id: number; name: string}[]>([]);
@@ -348,7 +354,7 @@ export default function Home() {
             { icon: Youtube, color: '#FF0000', href: 'https://www.youtube.com/@KiooNgoziLeather' },
             { icon: TikTokIcon, color: '#000000', href: 'https://www.tiktok.com/@kioo_ngozi_leather' },
             { icon: XIcon, color: '#000000', href: 'https://x.com/kioo_ngozi_' },
-            { icon: MessageSquare, color: '#25D366', href: 'https://wa.me/254111955273' }
+                  { icon: WhatsAppIcon, color: '#25D366', href: 'https://wa.me/254111955273' }
           ].map((social, idx) => (
             <a 
               key={idx} href={social.href} target="_blank" rel="noopener noreferrer" 
@@ -913,7 +919,7 @@ export default function Home() {
                   { icon: Youtube, color: '#FF0000', href: 'https://www.youtube.com/@KiooNgoziLeather' },
                   { icon: TikTokIcon, color: '#000000', href: 'https://www.tiktok.com/@kioo_ngozi_leather' },
                   { icon: XIcon, color: '#000000', href: 'https://x.com/kioo_ngozi_' },
-                  { icon: MessageSquare, color: '#25D366', href: 'https://wa.me/254111955273' }
+            { icon: WhatsAppIcon, color: '#25D366', href: 'https://wa.me/254111955273' }
                 ].map((social, idx) => (
                   <a 
                     key={idx} href={social.href} target="_blank" rel="noopener noreferrer"
@@ -938,7 +944,7 @@ export default function Home() {
               <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: theme.gold, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '25px' }}>SUPPORT</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                 <a href="https://wa.me/254111955273" style={{ color: theme.textMuted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}>
-                  <MessageSquare size={16} color="#25D366" /> WhatsApp Support
+                  <WhatsAppIcon size={16} color="#25D366" /> WhatsApp Support
                 </a>
                 <a href="tel:+254111955273" style={{ color: theme.textMuted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}>
                   <Phone size={16} color={theme.primary} /> +254 111 955 273
@@ -1166,7 +1172,7 @@ export default function Home() {
                   }}
                   style={{ width: '100%', padding: '20px', background: '#25D366', color: 'white', border: 'none', borderRadius: '15px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
                 >
-                  <MessageSquare size={20} /> CONFIRM ON WHATSAPP
+                  <WhatsAppIcon size={20} /> CONFIRM ON WHATSAPP
                 </button>
               </div>
             ) : (
