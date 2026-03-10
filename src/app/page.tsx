@@ -197,17 +197,17 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.variant.price || 0) * item.quantity, 0);
 
-  // Kioo Ngozi - Light Cream/Gold Theme
+  // Kioo Ngozi - Light Cream/Orange Theme
   const theme = {
-    primary: '#e95420',
-    primaryGlow: 'rgba(233, 84, 32, 0.3)',
-    dark: '#faf8f5', // Original light cream
-    surface: '#f3ece4', // Warm cream
-    surfaceLight: '#ebe5dc', // Slightly darker cream
-    text: '#1a1412', // Darkest dark brown
-    textMuted: '#666666', // Medium gray
+    primary: '#ff8c00', // Opencode-style Orange
+    primaryGlow: 'rgba(255, 140, 0, 0.2)',
+    dark: '#faf8f5',
+    surface: '#f0e6d7', // Creamier, matching the gold tone
+    surfaceLight: '#e6dccb',
+    text: '#1a1412',
+    textMuted: '#666666',
     border: 'rgba(0,0,0,0.1)',
-    gold: '#cfae81', // The gold color from "Step into Leadership"
+    gold: '#ff8c00', // Titles are now Orange
     accent: '#ff6b35',
   };
 
