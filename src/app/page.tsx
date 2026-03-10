@@ -197,18 +197,18 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.variant.price || 0) * item.quantity, 0);
 
-  // Kioo Ngozi - Futuristic Dark Theme
+  // Kioo Ngozi - Darker Brown/Cream Theme
   const theme = {
-    primary: '#e95420',
-    primaryGlow: 'rgba(233, 84, 32, 0.3)',
-    dark: '#ffffff', // White
-    surface: '#faf8f5', // Warm white
-    surfaceLight: '#f0ebe5', // Warm light gray
-    text: '#1a1a1a', // Dark
-    textMuted: '#666666', // Medium gray
-    border: 'rgba(0,0,0,0.1)',
-    gold: '#cfae81',
-    accent: '#ff6b35',
+    primary: '#9c310d', // Deep Burnt Orange
+    primaryGlow: 'rgba(156, 49, 13, 0.2)',
+    dark: '#e8dfd5', // Richer, darker cream background
+    surface: '#d9cfc2', // Tan surface
+    surfaceLight: '#c4b8a8', // Deep tan surface
+    text: '#1a1412', // Deepest dark brown (nearly black)
+    textMuted: '#4a3f39', // Darker medium brown
+    border: 'rgba(26, 20, 18, 0.2)',
+    gold: '#6b563f', // Dark deep gold
+    accent: '#8e2e0c',
   };
 
   if (loading) {
@@ -576,9 +576,9 @@ export default function Home() {
             backgroundSize: '200% 200%', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             animation: 'gradient-shift 5s ease infinite', letterSpacing: '-2px'
           }}>
-            STEP INTO LEADERSHIP.
+            STEP INTO LEADERSHIP
           </h1>
-          <h2 style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', fontWeight: 300, color: theme.gold, marginBottom: '30px', fontFamily: 'var(--font-cormorant), serif' }}>Become a Kiongozi.</h2>
+          <h2 style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', fontWeight: 300, color: theme.gold, marginBottom: '30px', fontFamily: 'var(--font-cormorant), serif' }}>Become a Kiongozi</h2>
           <p style={{ fontSize: '1.2rem', color: theme.textMuted, marginBottom: '40px', maxWidth: '700px', margin: '0 auto 50px', fontWeight: 300, lineHeight: 1.6 }}>
             Premium Kenyan leather goods handcrafted in limited batches. Each piece is designed for leaders who understand that what you wear reflects who you are — and the legacy you're building.
           </p>
