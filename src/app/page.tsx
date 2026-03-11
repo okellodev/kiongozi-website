@@ -426,12 +426,18 @@ export default function Home() {
         </div>
 
         <nav style={{ display: 'none', gap: '30px', alignItems: 'center' }} className="md:flex">
-          {['HOME', 'SHOP', 'OUR CRAFT', 'CONTACT'].map((item) => (
+          {[
+            { label: 'HOME', href: '#hero' },
+            { label: 'SHOP', href: '#products' },
+            { label: 'ABOUT', href: '#about' },
+            { label: 'OUR CRAFT', href: '#craft' },
+            { label: 'CONTACT', href: '#footer' }
+          ].map((item) => (
             <a 
-              key={item} href={item === 'SHOP' ? '#products' : (item === 'OUR CRAFT' ? '#craft' : '#')}
+              key={item.label} href={item.href}
               style={{ color: theme.text, textDecoration: 'none', fontWeight: 600, fontSize: '0.8rem', letterSpacing: '1px', position: 'relative' }}
             >
-              {item}
+              {item.label}
             </a>
           ))}
           
@@ -543,13 +549,19 @@ export default function Home() {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                {['HOME', 'SHOP', 'OUR CRAFT', 'CONTACT'].map((item) => (
+                {[
+                  { label: 'HOME', href: '#hero' },
+                  { label: 'SHOP', href: '#products' },
+                  { label: 'ABOUT', href: '#about' },
+                  { label: 'OUR CRAFT', href: '#craft' },
+                  { label: 'CONTACT', href: '#footer' }
+                ].map((item) => (
                   <a 
-                    key={item} href={item === 'SHOP' ? '#products' : (item === 'OUR CRAFT' ? '#craft' : '#')}
+                    key={item.label} href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{ color: 'white', textDecoration: 'none', fontWeight: 800, fontSize: '2rem', fontFamily: 'var(--font-cormorant), serif', letterSpacing: '2px' }}
                   >
-                    {item}
+                    {item.label}
                   </a>
                 ))}
               </div>
@@ -568,7 +580,7 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section style={{
+      <section id="hero" style={{
         minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
         position: 'relative', zIndex: 1, padding: '120px 40px 80px',
         backgroundImage: 'url(/duffle.jpg)',
@@ -752,6 +764,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section id="about" style={{ padding: '100px 20px', background: `linear-gradient(180deg, ${theme.dark}, ${theme.surface})`, position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+          <h2 className="section-title">THE SPIRIT OF KIONGOZI</h2>
+          <p style={{ color: theme.text, fontSize: '1.25rem', marginBottom: '40px', lineHeight: 1.8, maxWidth: '800px', margin: '0 auto 60px', fontFamily: 'var(--font-cormorant), serif' }}>
+            In Swahili, "Kiongozi" means Leader. At Kioo Ngozi, we believe that true leadership isn’t just about position — it’s about presence, character, and the legacy you leave behind. 
+            Our craft is dedicated to those who build, those who lead, and those who understand that every detail of their journey reflects the excellence they strive for.
+          </p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '40px', marginBottom: '80px' }}>
+            <div style={{ padding: '40px', background: 'rgba(255,255,255,0.03)', borderRadius: '32px', border: `1px solid ${theme.border}`, textAlign: 'center' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: `${theme.primary}10`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 25px' }}>
+                <MapPin size={28} color={theme.primary} />
+              </div>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '15px', color: theme.gold }}>Nairobi Heritage</h3>
+              <p style={{ color: theme.textMuted, lineHeight: 1.7, fontSize: '0.95rem' }}>
+                Handcrafted in the heart of Nairobi by master artisans preserving centuries-old Kenyan leather traditions.
+              </p>
+            </div>
+            
+            <div style={{ padding: '40px', background: 'rgba(255,255,255,0.03)', borderRadius: '32px', border: `1px solid ${theme.border}`, textAlign: 'center' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: `${theme.primary}10`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 25px' }}>
+                <WhatsAppIcon size={28} color="#25D366" />
+              </div>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '15px', color: theme.gold }}>Direct Connection</h3>
+              <p style={{ color: theme.textMuted, lineHeight: 1.7, fontSize: '0.95rem' }}>
+                Connect directly with our workshop for bespoke requests and personalized service.<br/>
+                <a href="https://wa.me/254111955273" style={{ color: '#25D366', textDecoration: 'none', fontWeight: 700 }}>+254 111 955 273</a>
+              </p>
+            </div>
+            
+            <div style={{ padding: '40px', background: 'rgba(255,255,255,0.03)', borderRadius: '32px', border: `1px solid ${theme.border}`, textAlign: 'center' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: `${theme.primary}10`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 25px' }}>
+                <Instagram size={28} color={theme.primary} />
+              </div>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '15px', color: theme.gold }}>Follow the Craft</h3>
+              <p style={{ color: theme.textMuted, lineHeight: 1.7, fontSize: '0.95rem' }}>
+                Join our community of leaders and witness the journey from hide to heritage piece.<br/>
+                <a href="https://www.instagram.com/kioongozi/" target="_blank" rel="noopener noreferrer" style={{ color: theme.primary, textDecoration: 'none', fontWeight: 700 }}>@kioongozi</a>
+              </p>
+            </div>
+          </div>
+          
+          <div style={{ padding: '60px', background: theme.surface, borderRadius: '40px', border: `2px solid ${theme.border}`, textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
+            <h3 style={{ fontSize: '2rem', fontWeight: 800, color: theme.gold, marginBottom: '25px', fontFamily: 'var(--font-cormorant), serif' }}>The Artisan Promise</h3>
+            <p style={{ color: theme.textMuted, lineHeight: 2, fontSize: '1.1rem', maxWidth: '800px', margin: '0 auto' }}>
+              Every Kioo Ngozi piece is crafted from premium full-grain Kenyan leather. We don't just create accessories; we engineer companions for a lifetime of leadership. 
+              Each stitch represents our commitment to durability, each panel reflects our pursuit of perfection, and every finished product is a testament to the fact that true luxury 
+              isn't bought — it's built.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Products Grid */}
       <section id="products" style={{ maxWidth: '1400px', margin: '0 auto', padding: '80px 20px 120px', position: 'relative', zIndex: 1 }}>
         {filteredProducts.length === 0 ? (
@@ -870,15 +936,16 @@ export default function Home() {
               { name: 'KTN News', logo: '/media/ktn.webp', link: 'https://www.youtube.com/watch?v=ST5uLGnx7E8', desc: 'Sharing expert insight on leather quality standards on "Entrepreneur".' }
             ].map((media, i) => (
               <a key={i} href={media.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'block' }}>
-                <div style={{ padding: '20px md:padding:30px', background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s ease', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                  className="p-5 md:p-8"
                   onMouseEnter={e => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.transform = 'translateY(-5px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <div style={{ height: '60px md:height:80px', width: '60px md:width:80px', marginBottom: '15px md:marginBottom:20px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }} className="w-16 h-16 md:w-20 md:h-20">
+                  <div style={{ borderRadius: '50%', overflow: 'hidden', border: `2px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }} className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6">
                     <img src={media.logo} alt={media.name} style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
                   </div>
-                  <span style={{ fontSize: '1rem md:fontSize:1.2rem', fontWeight: 800, color: theme.gold, display: 'block', marginBottom: '10px md:marginBottom:15px' }}>{media.name}</span>
-                  <p style={{ color: theme.textMuted, fontSize: '0.75rem md:fontSize:0.85rem', lineHeight: 1.5 }} className="hidden sm:block">{media.desc}</p>
+                  <span style={{ fontWeight: 800, color: theme.gold, display: 'block' }} className="text-base md:text-xl mb-2 md:mb-4">{media.name}</span>
+                  <p style={{ color: theme.textMuted, lineHeight: 1.5 }} className="text-xs md:text-sm hidden sm:block">{media.desc}</p>
                 </div>
               </a>
             ))}
@@ -902,7 +969,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer style={{ background: theme.surface, padding: '80px 20px 40px', borderTop: `1px solid ${theme.border}`, position: 'relative', zIndex: 1 }}>
+      <footer id="footer" style={{ background: theme.surface, padding: '80px 20px 40px', borderTop: `1px solid ${theme.border}`, position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '60px', marginBottom: '60px' }}>
             
@@ -1070,7 +1137,7 @@ export default function Home() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 4000, display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)' }} onClick={() => setShowCart(false)}></div>
           <div style={{ position: 'relative', width: '100%', maxWidth: '450px', background: theme.surface, height: '100%', display: 'flex', flexDirection: 'column', borderLeft: `1px solid ${theme.border}`, boxShadow: '-20px 0 50px rgba(0,0,0,0.5)' }} className="w-full sm:max-w-[450px]">
-            <div style={{ padding: '20px md:padding:30px', borderBottom: `1px solid ${theme.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="p-5 md:p-8">
+            <div style={{ borderBottom: `1px solid ${theme.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="p-6 md:p-8">
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: theme.gold, fontFamily: 'var(--font-cormorant), serif' }}>YOUR COLLECTION</h3>
               <button onClick={() => setShowCart(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}>
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>

@@ -34,7 +34,9 @@ export async function getProducts(brand: string = 'KIONGOZI', category?: string)
   console.log("Fetching products from:", url);
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      next: { revalidate: 60 }
+    });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
     return data.products || [];
@@ -49,7 +51,9 @@ export async function getProduct(id: number | string): Promise<ProductDetail> {
   console.log("Fetching product detail from:", url);
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      next: { revalidate: 60 }
+    });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     return res.json();
   } catch (err) {
@@ -61,7 +65,9 @@ export async function getProduct(id: number | string): Promise<ProductDetail> {
 export async function getCategories(): Promise<{id: number; name: string}[]> {
   const url = `${API_BASE}/api/categories/`;
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      next: { revalidate: 3600 }
+    });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
     return data.categories || [];
