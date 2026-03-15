@@ -1257,14 +1257,14 @@ export default function Home() {
                       <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>Full Name</label>
                       <input 
                         required type="text" value={orderForm.name} onChange={e => setOrderForm({...orderForm, name: e.target.value})}
-                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', fontSize: '0.9rem' }}
+                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'black', outline: 'none', fontSize: '0.9rem' }}
                       />
                     </div>
                     <div>
                       <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>WhatsApp Phone</label>
                       <input 
                         required type="tel" value={orderForm.phone} onChange={e => setOrderForm({...orderForm, phone: e.target.value})}
-                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', fontSize: '0.9rem' }}
+                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'black', outline: 'none', fontSize: '0.9rem' }}
                         placeholder="0712..."
                       />
                     </div>
@@ -1275,7 +1275,7 @@ export default function Home() {
                     <select 
                       value={orderForm.delivery_method} 
                       onChange={e => setOrderForm({...orderForm, delivery_method: e.target.value})}
-                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', appearance: 'none', cursor: 'pointer', fontSize: '0.9rem' }}
+                      style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'black', outline: 'none', appearance: 'none', cursor: 'pointer', fontSize: '0.9rem' }}
                     >
                       <option value="DELIVERY">Doorstep Delivery (24-48 hrs)</option>
                       <option value="PICKUP">In-Store Pickup (Mithoo Center)</option>
@@ -1287,7 +1287,7 @@ export default function Home() {
                       <label style={{ fontSize: '0.7rem', fontWeight: 700, color: theme.textMuted, textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '1px' }}>Delivery Address</label>
                       <textarea 
                         required rows={2} value={orderForm.address} onChange={e => setOrderForm({...orderForm, address: e.target.value})}
-                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'white', outline: 'none', resize: 'none', fontSize: '0.9rem' }}
+                        style={{ width: '100%', background: theme.dark, border: `1px solid ${theme.border}`, padding: '15px', borderRadius: '12px', color: 'black', outline: 'none', resize: 'none', fontSize: '0.9rem' }}
                         placeholder="Street, Apartment, City"
                       />
                     </motion.div>
